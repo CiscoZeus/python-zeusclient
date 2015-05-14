@@ -7,7 +7,7 @@ Create a Zeus client
 
 To use Zeus Python Client in a project::
 
-    import zeus
+    from zeus import client
 
 Create a ZeusClient object::
 
