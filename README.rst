@@ -2,8 +2,8 @@
 Zeus Python Client
 ===============================
 
-.. image:: https://magnum.travis-ci.com/CiscoZeus/python-zeusclient.svg?token=Ehc2A9GF6FzDURskVXsm&branch=master
-    :target: https://magnum.travis-ci.com/CiscoZeus/python-zeusclient
+.. image:: https://travis-ci.org/CiscoZeus/python-zeusclient.svg
+    :target: https://travis-ci.org/CiscoZeus/python-zeusclient
 .. image:: https://img.shields.io/pypi/v/cisco-zeus.svg
         :target: https://pypi.python.org/pypi/cisco-zeus
 
