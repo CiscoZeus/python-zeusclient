@@ -4,6 +4,10 @@ Zeus Python Client
 
 .. image:: https://travis-ci.org/CiscoZeus/python-zeusclient.svg
     :target: https://travis-ci.org/CiscoZeus/python-zeusclient
+
+.. image:: https://coveralls.io/repos/CiscoZeus/python-zeusclient/badge.svg?branch=master
+  :target: https://coveralls.io/r/CiscoZeus/python-zeusclient?branch=master
+
 .. image:: https://img.shields.io/pypi/v/cisco-zeus.svg
         :target: https://pypi.python.org/pypi/cisco-zeus
 
