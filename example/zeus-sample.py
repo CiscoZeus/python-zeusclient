@@ -55,6 +55,8 @@ print("User token: " + token)
 print("\nLets now post some logs and metrics.")
 print("We are going to send a log " + str(NUMBER_OF_SAMPLES) + " times in " +
       "groups of " + str(BATCH_SIZE) + ".")
+print("You can send any JSON as a log. However, in this example, we will" +
+      " send a single message.")
 message = raw_input("What message would you like to send? ")
 
 # Log sending
@@ -74,9 +76,10 @@ print(
     "\nPOST request to http://api.ciscozeus.io/metrics/" + token + "/Zeus101")
 for i in range(0, NUMBER_OF_SAMPLES, BATCH_SIZE):
     metrics = [
-        {"value": random.randint(0, 100)} for x in range(0,
-                                                         min(NUMBER_OF_SAMPLES
-                                                             - i, BATCH_SIZE))]
+        {"point": {"value": random.randint(0, 100)}}
+        for x in range(0,
+                       min(NUMBER_OF_SAMPLES
+                           - i, BATCH_SIZE))]
     print "Sending group " + str(i + 1) + ': ' + str(z.sendMetric("Zeus101",
                                                                   metrics))
 
@@ -94,8 +97,9 @@ os.system('clear')
 # Log consumption
 print(
     "\nGET request to http://api.ciscozeus.io/logs/" + token + "?log_name=" +
-    "Zeus101&limit=10&pattern=" + message)
-status, l = z.getLog('Zeus101', limit=10, pattern=message)
+    "Zeus101&limit=10&pattern=" + message + "&attribute_name=message")
+status, l = z.getLog('Zeus101', limit=10, attribute_name="message",
+                     pattern=message)
 
 if status == 200:
     print("\nLogs:")
@@ -114,9 +118,14 @@ raw_input("\nLets now retrieve some metrics from Zeus." +
 print(
     "\nGET request to http://api.ciscozeus.io/metrics/" + token + "/_values?" +
     "limit=10&group_interval=1m&aggregator_function=sum&filter_condition=" +
-    "'value > 90'")
+    "'value > 90'&aggregator_column=value&metric_name=Zeus101")
 status, m = z.getMetric(limit=10, group_interval='1m',
-                        aggregator='sum', filter_condition='value > 90')
+                        metric_name='Zeus101',
+                        aggregator_function='sum',
+                        aggregator_column='value',
+                        filter_condition='value > 20')
+print status
+print m
 
 if status == 200:
     print "\n" + m[0]['name'] + "\t" + '\t\t'.join(m[0]['columns'])
@@ -127,7 +136,7 @@ else:
           "correctly formatted?")
 
 raw_input(
-    "\nFinally, let's retrieve a list of metrics. " +
+    "\nFinally, let's retrieve a list of metric names. " +
     "Press ENTER when you are ready.")
 
 # Metric list consumption

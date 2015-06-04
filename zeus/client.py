@@ -83,6 +83,7 @@ class ZeusClient():
 
     def getLog(self,
                log_name,
+               attribute_name=None,
                pattern=None,
                from_date=None,
                to_date=None,
@@ -91,6 +92,8 @@ class ZeusClient():
         """Return ``array`` of ``dict`` with the logs that match the params.
 
         :param string log_name: Name of the log.
+        :param string attribute_name: Name of field to be searched. If omitted,
+        search all fields.
         :param string pattern: Pattern to match the logs against.
         :param string from_date: Unix formatted start date.
         :param string to_date: Unix formatted end date.
@@ -100,6 +103,8 @@ class ZeusClient():
 
         """
         data = {"log_name": log_name}
+        if attribute_name:
+            data['attribute_name'] = attribute_name
         if pattern:
             data['pattern'] = pattern
         if from_date:
@@ -113,36 +118,42 @@ class ZeusClient():
 
         return self._sendRequest('GET', '/logs/' + self.token + '/', data)
 
-    def getMetric(self, metric_name=None,
+    def getMetric(self, metric_name,
                   from_date=None,
                   to_date=None,
-                  aggregator=None,
+                  aggregator_function=None,
+                  aggregator_column=None,
                   group_interval=None,
                   filter_condition=None,
+                  offset=None,
                   limit=None):
         """Return ``array`` of ``dict`` with the metrics that match the params.
 
         :param string metric_name: Name of the metric.
         :param string from_date: Unix formatted start date.
         :param string to_date: Unix formatted end date.
-        :param string aggregator: Aggregator function. ``sum``, ``count``,
-        ``min``, ``max``,...
+        :param string aggregator_function: Aggregator function. ``sum``,
+        ``count``, ``min``, ``max``,...
+        :param string aggregator_column: Column to which
+        ``aggregator_function`` is to be applied.
         :param string group_interval: Intervals in which to group the results.
+        :param string filter_condition: Filters to be applied to metric values.
         :param string offset: Result offset.
         :param string limit: Max number of results in the return.
         :rtype: array
 
         """
-        data = {}
-        if metric_name:
-            data['metric_name'] = metric_name
+        data = {"metric_name": metric_name}
         if from_date:
             data['from'] = from_date
         if to_date:
             data['to'] = to_date
-        if aggregator:
+        if aggregator_function:
             # EG. 'sum'
-            data['aggregator_function'] = aggregator
+            data['aggregator_function'] = aggregator_function
+        if aggregator_column:
+            # EG. 'sum'
+            data['aggregator_column'] = aggregator_column
         if group_interval:
             # EG. '1m'
             data['group_interval'] = group_interval
@@ -151,16 +162,20 @@ class ZeusClient():
             data['filter_condition'] = filter_condition
         if limit:
             data['limit'] = limit
+        if offset:
+            data['offset'] = offset
 
         return self._sendRequest('GET', '/metrics/' + self.token +
                                  '/_values/', data)
 
-    def getMetricNames(self, metric_name=None, limit=None):
+    def getMetricNames(self, metric_name=None, limit=None, offset=None):
         """Return ``array`` of ``string`` with the metric names that match the
         params.
 
         :param string metric_name: Pattern for the metric name.
         :param string limit: Max number of results in the return.
+        :param string limit: Starting offset in the resulting list. The default
+        value is 0 (first result).
         :rtype: array
 
         """
@@ -169,6 +184,8 @@ class ZeusClient():
             data['metric_name'] = metric_name
         if limit:
             data['limit'] = limit
+        if offset:
+            data['offset'] = offset
 
         return self._sendRequest('GET', '/metrics/' + self.token +
                                  '/_names/', data)
@@ -176,3 +193,14 @@ class ZeusClient():
 
 class ZeusException(Exception):
     pass
+
+
+# class Log():
+
+#     def __init__(self, name, data, timestamp=None):
+#         self.name = name
+#         self.timestamp = timestamp
+#         self.data = data
+
+#     def package(self):
+#         l = {}

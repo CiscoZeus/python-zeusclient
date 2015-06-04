@@ -52,7 +52,7 @@ class TestZeusClient(unittest.TestCase):
 
     @mock.patch('zeus.client.requests')
     def test_post_single_log(self, mock_requests):
-        logs = [{"timestamp": 123541423, "message": "TestLog"}]
+        logs = [{"timestamp": 123541423, "key": "TestLog", "key2": 123}]
         self.z.sendLog('ZeusTest', logs)
         mock_requests.post.assert_called_with(FAKE_SERVER + '/logs/' +
                                               FAKE_TOKEN + '/ZeusTest/',
@@ -83,6 +83,7 @@ class TestZeusClient(unittest.TestCase):
     @mock.patch('zeus.client.requests')
     def test_get_logs(self, mock_requests):
         self.z.getLog('ZeusTest',
+                      attribute_name='message',
                       pattern='*',
                       from_date=123456789,
                       to_date=126235344235,
@@ -91,6 +92,8 @@ class TestZeusClient(unittest.TestCase):
         mock_requests.get.assert_called_with(FAKE_SERVER + '/logs/' +
                                              FAKE_TOKEN + '/',
                                              params={'log_name': 'ZeusTest',
+                                                     'attribute_name':
+                                                     'message',
                                                      'pattern': '*',
                                                      'from': 123456789,
                                                      'to': 126235344235,
@@ -137,32 +140,39 @@ class TestZeusClient(unittest.TestCase):
     @mock.patch('zeus.client.requests')
     def test_get_metric_values(self, mock_requests):
         self.z.getMetric(metric_name='ZeusTest',
-                         aggregator='sum',
+                         aggregator_function='sum',
+                         aggregator_column='val1',
                          from_date=123456789,
                          to_date=126235344235,
                          group_interval='1m',
                          filter_condition='value > 90',
-                         limit=10)
+                         limit=10,
+                         offset=20)
         mock_requests.get.assert_called_with(FAKE_SERVER + '/metrics/' +
                                              FAKE_TOKEN + '/_values/',
                                              params={'metric_name': 'ZeusTest',
                                                      'aggregator_function':
                                                      'sum',
+                                                     'aggregator_column':
+                                                     'val1',
                                                      'from': 123456789,
                                                      'to': 126235344235,
                                                      'group_interval': '1m',
                                                      'filter_condition':
                                                      'value > 90',
-                                                     'limit': 10})
+                                                     'limit': 10,
+                                                     'offset': 20})
 
     @mock.patch('zeus.client.requests')
     def test_get_metric_names(self, mock_requests):
         self.z.getMetricNames(metric_name='ZeusTest',
-                              limit=10)
+                              limit=10,
+                              offset=20)
         mock_requests.get.assert_called_with(FAKE_SERVER + '/metrics/' +
                                              FAKE_TOKEN + '/_names/',
                                              params={'metric_name': 'ZeusTest',
-                                                     'limit': 10})
+                                                     'limit': 10,
+                                                     'offset': 20})
 
     @mock.patch('zeus.client.requests')
     def tearDown(self, mock_requests):
