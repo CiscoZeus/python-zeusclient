@@ -34,7 +34,7 @@ with open('test_requirements.txt') as f:
 
 setup(
     name='cisco-zeus',
-    version='0.1.0',
+    version='0.2.0',
     description="Python client for CiscoZeus.io. It allows a user to post/query logs and metrics using Zeus.",
     long_description=readme + '\n\n' + history,
     author="Marc Solanas Tarre",
