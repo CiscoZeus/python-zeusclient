@@ -11,8 +11,9 @@ Zeus Python Client
 .. image:: https://img.shields.io/pypi/v/cisco-zeus.svg
         :target: https://pypi.python.org/pypi/cisco-zeus
 
-
 Python client for CiscoZeus.io. It allows a user to send and receive data to and from Zeus.
+
+![Alt text](/docs/images/zeus_logo.png?raw=true "Zeus Logo")
 
 * Free software: Apache License
 * Documentation: https://cisco-zeus.readthedocs.org.
