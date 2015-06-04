@@ -18,6 +18,11 @@ Now you are ready to start sending and querying logs and metrics. :D
 Logs
 ----------------------
 
+Log name format
+~~~~~~~~~~~
+
+All log names must have only letter and numbers (A-Za-z0-9).
+
 Send logs
 ~~~~~~~~~~~
 
@@ -44,6 +49,11 @@ To query logs::
 
 Metrics
 ----------------------
+
+Metric name format
+~~~~~~~~~~~
+
+All metric names must start with a letter or number (A-Za-z0-9) and can contain '.', '-' and '_'. 
 
 Send Metrics
 ~~~~~~~~~~~
