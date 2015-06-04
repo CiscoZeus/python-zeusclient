@@ -59,6 +59,18 @@ class TestZeusClient(unittest.TestCase):
                                               data={"logs": json.dumps(logs)})
 
     @mock.patch('zeus.client.requests')
+    def test_post_single_log_wrong_name(self, mock_requests):
+        logs = [{"message": "TestLog", "value": 23}]
+        self.assertRaises(
+            client.ZeusException, self.z.sendLog, 'W.rongName', logs)
+        self.assertRaises(
+            client.ZeusException, self.z.sendLog, '_WrongName', logs)
+        self.assertRaises(
+            client.ZeusException, self.z.sendLog, 'W#?rongName', logs)
+        self.assertRaises(
+            client.ZeusException, self.z.sendLog, 'W-rongName', logs)
+
+    @mock.patch('zeus.client.requests')
     def test_post_multiple_logs(self, mock_requests):
         logs = [{"timestamp": 123541423, "message": "TestLog"},
                 {"timestamp": 123541424, "message": "TestLog2"},
@@ -97,11 +109,19 @@ class TestZeusClient(unittest.TestCase):
     @mock.patch('zeus.client.requests')
     def test_post_single_metric(self, mock_requests):
         metrics = [{"timestamp": 123541423, "value": 0}]
-        self.z.sendMetric('ZeusTest', metrics)
+        self.z.sendMetric('Zeus.Test', metrics)
         mock_requests.post.assert_called_with(FAKE_SERVER + '/metrics/' +
-                                              FAKE_TOKEN + '/ZeusTest/',
+                                              FAKE_TOKEN + '/Zeus.Test/',
                                               data={"metrics":
                                                     json.dumps(metrics)})
+
+    @mock.patch('zeus.client.requests')
+    def test_post_single_metric_wrong_name(self, mock_requests):
+        metrics = [{"timestamp": 123541423, "value": 0}]
+        self.assertRaises(
+            client.ZeusException, self.z.sendMetric, '_WrongName', metrics)
+        self.assertRaises(
+            client.ZeusException, self.z.sendMetric, 'W#?rongName', metrics)
 
     @mock.patch('zeus.client.requests')
     def test_post_multiple_metrics(self, mock_requests):

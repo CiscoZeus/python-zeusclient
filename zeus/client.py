@@ -16,6 +16,7 @@
 
 import json
 import requests
+import re
 
 
 class ZeusClient():
@@ -40,6 +41,12 @@ class ZeusClient():
 
         return r.status_code, r.json()
 
+    def _validateLogName(self, name):
+        return True if re.match(r"^[a-zA-Z0-9]*$", name) else False
+
+    def _validateMetricName(self, name):
+        return True if re.match(r"^[^_.-][.\w-]*$", name) else False
+
     def sendLog(self, log_name, logs):
         """Return ``dict`` saying how many *logs* were successfully inserted
         with *log_name*.
@@ -49,6 +56,9 @@ class ZeusClient():
         :rtype: dict
 
         """
+        if not self._validateLogName(log_name):
+            raise ZeusException("Invalid input name. It can only contain" +
+                                " letters or numbers")
         data = {'logs': json.dumps(logs)}
         return self._sendRequest('POST', '/logs/' + self.token +
                                  '/' + log_name + '/', data)
@@ -63,6 +73,10 @@ class ZeusClient():
         :rtype: dict
 
         """
+        if not self._validateMetricName(metric_name):
+            raise ZeusException("Invalid input name. The name needs to start" +
+                                " with a letter or number and can contain" +
+                                " _ - or .")
         data = {'metrics': json.dumps(metrics)}
         return self._sendRequest('POST', '/metrics/' + self.token +
                                  '/' + metric_name + '/', data)
@@ -158,3 +172,7 @@ class ZeusClient():
 
         return self._sendRequest('GET', '/metrics/' + self.token +
                                  '/_names/', data)
+
+
+class ZeusException(Exception):
+    pass
