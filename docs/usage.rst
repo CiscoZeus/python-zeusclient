@@ -86,6 +86,15 @@ To query metrics::
                 filter_condition='value > 90',
                 limit=10)
 
+Delete metrics
+~~~~~~~~~~~
+
+To delete a metric::
+
+    z.deleteMetric('ZeusTest')
+
+This will delete the entire metric from Zeus.
+
 Dates
 ----------------------
 

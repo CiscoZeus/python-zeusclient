@@ -175,6 +175,17 @@ class TestZeusClient(unittest.TestCase):
                                                      'offset': 20})
 
     @mock.patch('zeus.client.requests')
+    def test_get_delete_metric(self, mock_requests):
+        self.z.deleteMetric('ZeusTest')
+        mock_requests.delete.assert_called_with(FAKE_SERVER + '/metrics/' +
+                                                FAKE_TOKEN + '/ZeusTest/')
+
+    @mock.patch('zeus.client.requests')
+    def test_get_delete_metric_wrong_name(self, mock_requests):
+        self.assertRaises(
+            client.ZeusException, self.z.deleteMetric, '_WrongName')
+
+    @mock.patch('zeus.client.requests')
     def tearDown(self, mock_requests):
         pass
 

@@ -38,6 +38,8 @@ class ZeusClient():
             r = requests.post(self.server + path, data=data)
         elif method == 'GET':
             r = requests.get(self.server + path, params=data)
+        elif method == 'DELETE':
+            r = requests.delete(self.server + path)
 
         return r.status_code, r.json()
 
@@ -189,6 +191,20 @@ class ZeusClient():
 
         return self._sendRequest('GET', '/metrics/' + self.token +
                                  '/_names/', data)
+
+    def deleteMetric(self, metric_name):
+        """Delete an entire metric from Zeus.
+
+        :param string metric_name: Pattern for the metric name.
+        :rtype: boolean
+
+        """
+        if not self._validateMetricName(metric_name):
+            raise ZeusException("Invalid input name. The name needs to start" +
+                                " with a letter or number and can contain" +
+                                " _ - or .")
+        return self._sendRequest('DELETE', '/metrics/' + self.token +
+                                 '/' + metric_name + '/', None)
 
 
 class ZeusException(Exception):

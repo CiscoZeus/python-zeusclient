@@ -136,7 +136,7 @@ else:
           "correctly formatted?")
 
 raw_input(
-    "\nFinally, let's retrieve a list of metric names. " +
+    "\nLet's retrieve a list of metric names. " +
     "Press ENTER when you are ready.")
 
 # Metric list consumption
@@ -145,6 +145,22 @@ print("\nGET request to http://api.ciscozeus.io/metrics/" +
 status, m = z.getMetricNames(limit=10)
 for metric in m:
     print metric
+
+raw_input("\nFinally let's delete the metric we just inserted. Press ENTER " +
+          "to continue.")
+
+print("Deleting...")
+print("\nDELETE request to http://api.ciscozeus.io/metrics/" +
+      token + "/Zeus101")
+z.deleteMetric('Zeus101')
+
+# Metric list consumption
+print("\nGET request to http://api.ciscozeus.io/metrics/" +
+      token + "/_names?limit=10")
+status, m = z.getMetricNames(limit=10)
+for metric in m:
+    print metric
+
 raw_input(
     "\nThis is the end of Zeus101. Please, feel free to use the ZeusClient " +
     "class as a base for your code. Press ENTER to exit.")
