@@ -42,6 +42,26 @@ class TestZeusClient(unittest.TestCase):
         z = client.ZeusClient(FAKE_TOKEN, "zeus.rocks")
         assert z.server == "http://zeus.rocks"
 
+    def test_validate_dates(self):
+        # normal
+        from_date = 12345
+        to_date = 12346
+        self.z._validateDates(from_date, to_date)
+        # None value
+        from_date = None
+        to_date = 12346
+        self.z._validateDates(from_date, to_date)
+        # invalid value
+        from_date = 'wrongvalue'
+        to_date = 12346
+        self.assertRaises(
+            client.ZeusException, self.z._validateDates, from_date, to_date)
+        # inversed order
+        from_date = 12346
+        to_date = 12345
+        self.assertRaises(
+            client.ZeusException, self.z._validateDates, from_date, to_date)
+
     @mock.patch('zeus.client.requests')
     def test_post_empty_log(self, mock_requests):
         logs = []

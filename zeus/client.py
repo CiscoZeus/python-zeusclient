@@ -66,6 +66,18 @@ class ZeusClient():
                                 "with a letter or number and can contain "
                                 "_ - or .")
 
+    def _validateDates(self, from_date, to_date):
+        try:
+            from_date_value = float(from_date) if from_date else None
+            to_date_value = float(to_date) if to_date else None
+        except ValueError as e:
+            raise ZeusException("Invalid date. %s" % str(e))
+        if (from_date_value is None) or (to_date_value is None):
+            return
+        elif from_date_value > to_date_value:
+            raise ZeusException("Invalid date. The from_date should not be "
+                                "after to_date.")
+
     def sendLog(self, log_name, logs):
         """Return ``dict`` saying how many *logs* were successfully inserted
         with *log_name*.
@@ -116,6 +128,7 @@ class ZeusClient():
         :rtype: array
 
         """
+        self._validateDates(from_date, to_date)
         data = {"log_name": log_name}
         if attribute_name:
             data['attribute_name'] = attribute_name
@@ -157,6 +170,7 @@ class ZeusClient():
         :rtype: array
 
         """
+        self._validateDates(from_date, to_date)
         data = {"metric_name": metric_name}
         if from_date:
             data['from'] = from_date
