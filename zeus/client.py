@@ -44,10 +44,39 @@ class ZeusClient():
         return r.status_code, r.json()
 
     def _validateLogName(self, name):
-        return True if re.match(r"^[a-zA-Z0-9]*$", name) else False
+        if name is None:
+            raise ZeusException("Invalid input. Log name cannot be None.")
+        name_length = len(name)
+        if name_length < 1 or name_length > 255:
+            raise ZeusException("Invalid log name. It must be longer than 1 "
+                                "character and shorter than 255 charaters.")
+        if not re.match(r"^[a-zA-Z0-9]*$", name):
+            raise ZeusException("Invalid log name. It can only contain "
+                                "letters or numbers.")
 
     def _validateMetricName(self, name):
-        return True if re.match(r"^[^_.-][.\w-]*$", name) else False
+        if name is None:
+            raise ZeusException("Invalid input. Metric name cannot be None.")
+        name_length = len(name)
+        if name_length < 1 or name_length > 255:
+            raise ZeusException("Invalid metric name. It must be longer than "
+                                "1 character and shorter than 255 charaters.")
+        if not re.match(r"^[^_.-][.\w-]*$", name):
+            raise ZeusException("Invalid metric name. The name needs to start "
+                                "with a letter or number and can contain "
+                                "_ - or .")
+
+    def _validateDates(self, from_date, to_date):
+        try:
+            from_date_value = float(from_date) if from_date else None
+            to_date_value = float(to_date) if to_date else None
+        except ValueError as e:
+            raise ZeusException("Invalid date. %s" % str(e))
+        if (from_date_value is None) or (to_date_value is None):
+            return
+        elif from_date_value > to_date_value:
+            raise ZeusException("Invalid date. The from_date should not be "
+                                "after to_date.")
 
     def sendLog(self, log_name, logs):
         """Return ``dict`` saying how many *logs* were successfully inserted
@@ -58,9 +87,7 @@ class ZeusClient():
         :rtype: dict
 
         """
-        if not self._validateLogName(log_name):
-            raise ZeusException("Invalid input name. It can only contain" +
-                                " letters or numbers")
+        self._validateLogName(log_name)
         data = {'logs': json.dumps(logs)}
         return self._sendRequest('POST', '/logs/' + self.token +
                                  '/' + log_name + '/', data)
@@ -75,10 +102,7 @@ class ZeusClient():
         :rtype: dict
 
         """
-        if not self._validateMetricName(metric_name):
-            raise ZeusException("Invalid input name. The name needs to start" +
-                                " with a letter or number and can contain" +
-                                " _ - or .")
+        self._validateMetricName(metric_name)
         data = {'metrics': json.dumps(metrics)}
         return self._sendRequest('POST', '/metrics/' + self.token +
                                  '/' + metric_name + '/', data)
@@ -104,6 +128,7 @@ class ZeusClient():
         :rtype: array
 
         """
+        self._validateDates(from_date, to_date)
         data = {"log_name": log_name}
         if attribute_name:
             data['attribute_name'] = attribute_name
@@ -145,6 +170,7 @@ class ZeusClient():
         :rtype: array
 
         """
+        self._validateDates(from_date, to_date)
         data = {"metric_name": metric_name}
         if from_date:
             data['from'] = from_date
@@ -199,10 +225,7 @@ class ZeusClient():
         :rtype: boolean
 
         """
-        if not self._validateMetricName(metric_name):
-            raise ZeusException("Invalid input name. The name needs to start" +
-                                " with a letter or number and can contain" +
-                                " _ - or .")
+        self._validateMetricName(metric_name)
         return self._sendRequest('DELETE', '/metrics/' + self.token +
                                  '/' + metric_name + '/', None)
 
