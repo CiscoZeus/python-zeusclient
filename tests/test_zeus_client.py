@@ -69,6 +69,13 @@ class TestZeusClient(unittest.TestCase):
             client.ZeusException, self.z.sendLog, 'W#?rongName', logs)
         self.assertRaises(
             client.ZeusException, self.z.sendLog, 'W-rongName', logs)
+        self.assertRaises(
+            client.ZeusException, self.z.sendLog, None, logs)
+        self.assertRaises(
+            client.ZeusException, self.z.sendLog, '', logs)
+        self.assertRaises(
+            client.ZeusException, self.z.sendLog, '0123456789ABCDEF' * 16,
+            logs)
 
     @mock.patch('zeus.client.requests')
     def test_post_multiple_logs(self, mock_requests):
@@ -125,6 +132,13 @@ class TestZeusClient(unittest.TestCase):
             client.ZeusException, self.z.sendMetric, '_WrongName', metrics)
         self.assertRaises(
             client.ZeusException, self.z.sendMetric, 'W#?rongName', metrics)
+        self.assertRaises(
+            client.ZeusException, self.z.sendMetric, None, metrics)
+        self.assertRaises(
+            client.ZeusException, self.z.sendMetric, '', metrics)
+        self.assertRaises(
+            client.ZeusException, self.z.sendMetric, '0123456789ABCDEF' * 16,
+            metrics)
 
     @mock.patch('zeus.client.requests')
     def test_post_multiple_metrics(self, mock_requests):
