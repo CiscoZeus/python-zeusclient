@@ -96,7 +96,6 @@ message = ""
 print("\nPOST request to http://api.ciscozeus.io/logs/" + token + "/syslog")
 parser = Parser()
 
-print os.walk(path)
 for fin in os.listdir(path):
     f = path + "/" + fin
     with open(f) as syslogFile:

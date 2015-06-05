@@ -1,0 +1,11 @@
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: hibernate_setup(0) took 43456 ms
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: IO80211AWDLPeerManager::doDisable   source [handleSIOCSIFFLAGS]
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: en0: BSSID changed to 0c:f8:93:1c:ad:00
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: en0: channel changed to 11
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: AirPort: Link Down on awdl0. Reason 1 (Unspecified).
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: IO80211AWDLPeerManager::doDisable   source [setLinkState]
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: Bluetooth -- LE is supported - Disable LE meta event
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: AirPort: Link Down on en0. Reason 8 (Disassociated because station leaving).
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: en0::IO80211Interface::postMessage bssid changed
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: en0: 802.11d country code set to 'X0'.
+Jun  5 00:31:21 SARANJAN-M-P0JM kernel[0]: en0: Supported channels 1 2 3 4 5 6 7 8 9 10 11 36 40 44 48 52 56 60 64 100 104 108 112 116 120 124 128 132 136 140 149 153 157 161 165
