@@ -60,11 +60,17 @@ Send Metrics
 
 You can send metrics as an array of timestamps and value dictionaries. To send metrics::
 
-    metrics = [{"timestamp": 123541423, "value": 0},
-               {"timestamp": 123541424, "value": 1},
-               {"timestamp": 123541425, "value": 2.0}
+    metrics = [
+        {"timestamp": 123541423,
+         "point": {"column1": 1, "column2": 2}},
+        {"timestamp": 123541424,
+         "point": {"column1": 3, "column2": 4}},
+        {"timestamp": 123541425,
+         "point": {"column1": 5, "column2": 6}}
     ]
     z.sendMetric("<METRIC_NAME>",metrics)
+
+If you omit the "timestamp" field, then current system time will be used as timestamp.
 
 Query metric names
 ~~~~~~~~~~~
