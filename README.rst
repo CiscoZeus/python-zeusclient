@@ -2,6 +2,8 @@
 Zeus Python Client
 ===============================
 
+.. image:: https://raw.githubusercontent.com/CiscoZeus/python-zeusclient/master/docs/images/zeus_logo.png
+
 .. image:: https://travis-ci.org/CiscoZeus/python-zeusclient.svg
     :target: https://travis-ci.org/CiscoZeus/python-zeusclient
 
