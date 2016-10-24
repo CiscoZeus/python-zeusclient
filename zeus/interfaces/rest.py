@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import requests
+from urlparse import urlparse
 
 METHOD_POST = 'POST'
 METHOD_GET = 'GET'
@@ -24,10 +25,11 @@ METHOD_DELETE = 'DELETE'
 class RestClient(object):
 
     def __init__(self, server):
-        if not server.startswith('https://'):
-            self.server = 'https://' + server
-        else:
-            self.server = server
+        # makes sure we always use https
+        url_object = urlparse(server)
+        url_parts = list(url_object)
+        url_parts[0] = "https://"
+        self.server = ''.join(url_parts)
 
     def _sendRequest(self, method, path, data=None, headers=None):
         if method == METHOD_POST:
