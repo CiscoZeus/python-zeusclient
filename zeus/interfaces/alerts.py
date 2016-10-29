@@ -28,12 +28,14 @@ class AlertsInterface(object):
             alert_severity, metric_name, emails, status, frequency
     ):
 
-        """Creates a new alert, returns status code of creation and alert parameters
+        """Creates a new alert, returns status code of creation
+        and alert parameters
 
         :param alert_name: Name of the alert
         :param username: User the alert belongs to
         :param alerts_type: "metric" or "log"
-        :param alert_expression: expression to evaluate the alert (eg. "cpu.value > 20")
+        :param alert_expression: expression to evaluate the alert
+        (eg. "cpu.value > 20")
         :param alert_severity: severity level of the alert
         :param metric_name: metric associated with the alert
         :param emails: emails to receive notification when the alert triggers
@@ -70,8 +72,9 @@ class AlertsInterface(object):
         return self.rest_client.sendGetRequest(path)
 
     def modifyAlert(
-            self, alert_id, alert_name, username, alerts_type, alert_expression,
-            alert_severity, metric_name, emails, status, frequency
+            self, alert_id, alert_name, username, alerts_type,
+            alert_expression, alert_severity, metric_name, emails, status,
+            frequency
     ):
 
         """Modifies an existing alert with new data
@@ -80,7 +83,8 @@ class AlertsInterface(object):
         :param alert_name: Name of the alert
         :param username: User the alert belongs to
         :param alerts_type: "metric" or "log"
-        :param alert_expression: expression to evaluate the alert (eg. "cpu.value > 20")
+        :param alert_expression: expression to evaluate the alert
+        (eg. "cpu.value > 20")
         :param alert_severity: severity level of the alert
         :param metric_name: metric associated with the alert
         :param emails: emails to receive notification when the alert triggers

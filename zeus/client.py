@@ -14,12 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import requests
 from interfaces.rest import RestClient
 from interfaces.logs import LogsInterface
 from interfaces.metrics import MetricsInterface
 from interfaces.alerts import AlertsInterface
 from interfaces.trigalerts import TrigAlertsInterface
+
 
 class ZeusClient(MetricsInterface, LogsInterface, AlertsInterface,
                  TrigAlertsInterface):
@@ -32,4 +32,5 @@ class ZeusClient(MetricsInterface, LogsInterface, AlertsInterface,
     def __init__(self, user_token, server):
         self.token = user_token
         rest_client = RestClient(server)
+        self.server = rest_client.server
         super(ZeusClient, self).__init__(user_token, rest_client)

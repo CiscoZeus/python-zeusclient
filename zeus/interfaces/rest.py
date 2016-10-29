@@ -22,6 +22,7 @@ METHOD_GET = 'GET'
 METHOD_PUT = 'PUT'
 METHOD_DELETE = 'DELETE'
 
+
 class RestClient(object):
 
     def __init__(self, server):
@@ -41,7 +42,7 @@ class RestClient(object):
         elif method == METHOD_PUT:
             r = requests.put(self.server + path, data=data, headers=headers)
 
-        if r.status_code == 500 :
+        if r.status_code == 500:
             raise Exception("Internal Server Error")
         try:
             return r.status_code, r.json()

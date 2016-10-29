@@ -17,6 +17,7 @@
 import json
 from utils import validateLogName, validateDates
 
+
 class LogsInterface(object):
 
     def __init__(self, user_token, rest_client):
@@ -35,7 +36,7 @@ class LogsInterface(object):
         validateLogName(log_name)
         data = {'logs': json.dumps(logs)}
         return self.rest_client.sendPostRequest('/logs/' + self.token +
-                                 '/' + log_name + '/', data)
+                                                '/' + log_name + '/', data)
 
     def getLog(self,
                log_name,
@@ -73,4 +74,5 @@ class LogsInterface(object):
         if limit:
             data['limit'] = limit
 
-        return self.rest_client.sendGetRequest('/logs/' + self.token + '/', data)
+        return self.rest_client.sendGetRequest('/logs/' + self.token + '/',
+                                               data)

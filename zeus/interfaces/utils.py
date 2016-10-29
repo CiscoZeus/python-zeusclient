@@ -16,6 +16,7 @@
 
 import re
 
+
 def validateMetricName(name):
     if name is None:
         raise ZeusException("Invalid input. Metric name cannot be None.")
@@ -27,6 +28,7 @@ def validateMetricName(name):
         raise ZeusException("Invalid metric name. The name needs to start "
                             "with a letter or number and can contain "
                             "_ - or .")
+
 
 def validateDates(from_date, to_date):
     try:
@@ -40,6 +42,7 @@ def validateDates(from_date, to_date):
         raise ZeusException("Invalid date. The from_date should not be "
                             "after to_date.")
 
+
 def validateLogName(name):
     if name is None:
         raise ZeusException("Invalid input. Log name cannot be None.")
@@ -50,6 +53,7 @@ def validateLogName(name):
     if not re.match(r"^[a-zA-Z0-9]*$", name):
         raise ZeusException("Invalid log name. It can only contain "
                             "letters or numbers.")
+
 
 class ZeusException(Exception):
     pass

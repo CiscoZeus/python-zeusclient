@@ -17,6 +17,7 @@
 import json
 from utils import validateMetricName, validateDates
 
+
 class MetricsInterface(object):
 
     def __init__(self, user_token, rest_client):
@@ -36,7 +37,7 @@ class MetricsInterface(object):
         validateMetricName(metric_name)
         data = {'metrics': json.dumps(metrics)}
         return self.rest_client.sendPostRequest('/metrics/' + self.token +
-                                 '/' + metric_name + '/', data)
+                                                '/' + metric_name + '/', data)
 
     def getMetric(self, metric_name,
                   from_date=None,
@@ -87,7 +88,7 @@ class MetricsInterface(object):
             data['offset'] = offset
 
         return self.rest_client.sendGetRequest('/metrics/' + self.token +
-                                 '/_values/', data)
+                                               '/_values/', data)
 
     def getMetricNames(self, metric_name=None, limit=None, offset=None):
         """Return ``array`` of ``string`` with the metric names that match the
@@ -109,7 +110,7 @@ class MetricsInterface(object):
             data['offset'] = offset
 
         return self.rest_client.sendGetRequest('/metrics/' + self.token +
-                                 '/_names/', data)
+                                               '/_names/', data)
 
     def deleteMetric(self, metric_name):
         """Delete an entire metric from Zeus.
@@ -119,5 +120,6 @@ class MetricsInterface(object):
 
         """
         validateMetricName(metric_name)
-        return self.rest_client.sendDeleteRequest('/metrics/' + self.token +
-                                 '/' + metric_name + '/', None)
+        return self.rest_client.sendDeleteRequest(
+            '/metrics/' + self.token + '/' + metric_name + '/', None
+        )
