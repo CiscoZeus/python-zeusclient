@@ -224,6 +224,148 @@ class TestZeusClient(unittest.TestCase):
                                                 FAKE_TOKEN + '/ZeusTest/')
 
     @mock.patch('zeus.interfaces.rest.requests')
+    def test_create_alert(self, mock_requests):
+
+        alert_name = "testerino"
+        username = "pelegrino"
+        token = FAKE_TOKEN
+        alerts_type = "metric"
+        alert_expression = "cpu.value > 20"
+        alert_severity = "S1"
+        metric_name = "cpu.value"
+        emails = "john1234@gmail.com"
+        status = "active"
+        frequency = 60
+
+        self.z.createAlert(alert_name, username, alerts_type,
+                           alert_expression, alert_severity, metric_name,
+                           emails, status, frequency)
+        data = {
+            'alert_name': alert_name,
+            'username': username,
+            'token': token,
+            'alerts_type': alerts_type,
+            'alert_expression': alert_expression,
+            'alert_severity': alert_severity,
+            'metric_name': metric_name,
+            'emails': emails,
+            'status': status,
+            'frequency': frequency
+        }
+
+        mock_requests.post.assert_called_with(
+            FAKE_SERVER + '/alerts/' +
+            FAKE_TOKEN, data=json.dumps(data),
+            headers={'content-type': 'application/json'}
+        )
+
+    @mock.patch('zeus.interfaces.rest.requests')
+    def test_modify_alert(self, mock_requests):
+
+        alert_id = 42
+        alert_name = "testerino"
+        username = "pelegrino"
+        token = FAKE_TOKEN
+        alerts_type = "metric"
+        alert_expression = "cpu.value > 20"
+        alert_severity = "S1"
+        metric_name = "cpu.value"
+        emails = "john1234@gmail.com"
+        status = "active"
+        frequency = 60
+
+        self.z.modifyAlert(alert_id, alert_name, username, alerts_type,
+                           alert_expression, alert_severity, metric_name,
+                           emails, status, frequency)
+        data = {
+            'alert_name': alert_name,
+            'username': username,
+            'token': token,
+            'alerts_type': alerts_type,
+            'alert_expression': alert_expression,
+            'alert_severity': alert_severity,
+            'metric_name': metric_name,
+            'emails': emails,
+            'status': status,
+            'frequency': frequency
+        }
+
+        path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/' + str(alert_id)
+        mock_requests.put.assert_called_with(
+            path, data=json.dumps(data),
+            headers={'content-type': 'application/json'}
+        )
+
+    @mock.patch('zeus.interfaces.rest.requests')
+    def test_get_alerts(self, mock_requests):
+        self.z.getAlerts()
+
+        path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN
+        mock_requests.get.assert_called_with(path, params=None)
+
+    @mock.patch('zeus.interfaces.rest.requests')
+    def test_get_alert(self, mock_requests):
+        alert_id = 42
+        self.z.getAlert(alert_id)
+
+        path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/' + str(alert_id)
+        mock_requests.get.assert_called_with(path, params=None)
+
+    @mock.patch('zeus.interfaces.rest.requests')
+    def test_delete_alert(self, mock_requests):
+        alert_id = 42
+        self.z.deleteAlert(alert_id)
+
+        path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/' + str(alert_id)
+        mock_requests.delete.assert_called_with(path)
+
+    @mock.patch('zeus.interfaces.rest.requests')
+    def test_enable_alerts(self, mock_requests):
+
+        alert_id_list = [19, 42]
+        self.z.enableAlerts(alert_id_list)
+        data = {
+            'id': alert_id_list
+        }
+
+        path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/enable'
+        mock_requests.post.assert_called_with(
+            path, data=json.dumps(data),
+            headers={'content-type': 'application/json'}
+        )
+
+    @mock.patch('zeus.interfaces.rest.requests')
+    def test_disable_alerts(self, mock_requests):
+
+        alert_id_list = [19, 42]
+        self.z.disableAlerts(alert_id_list)
+        data = {
+            'id': alert_id_list
+        }
+
+        path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/disable'
+        mock_requests.post.assert_called_with(
+            path, data=json.dumps(data),
+            headers={'content-type': 'application/json'}
+        )
+
+    @mock.patch('zeus.interfaces.rest.requests')
+    def test_get_triggered_alerts(self, mock_requests):
+
+        self.z.getTriggeredAlerts()
+
+        path = FAKE_SERVER + '/trigalerts/' + FAKE_TOKEN
+        mock_requests.get.assert_called_with(path, params=None)
+
+    @mock.patch('zeus.interfaces.rest.requests')
+    def test_get_triggered_alerts_last_24h(self, mock_requests):
+
+        self.z.getTriggeredAlertsLast24Hours()
+
+        path = FAKE_SERVER + '/trigalerts/' + FAKE_TOKEN + "/last24"
+        mock_requests.get.assert_called_with(path, params=None)
+
+    @mock.patch('zeus.interfaces.rest.requests')
     def test_get_delete_metric_wrong_name(self, mock_requests):
         self.assertRaises(
             ZeusException, self.z.deleteMetric, '_WrongName')
