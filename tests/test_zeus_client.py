@@ -235,11 +235,11 @@ class TestZeusClient(unittest.TestCase):
         metric_name = "cpu.value"
         emails = "john1234@gmail.com"
         status = "active"
-        frequency = 60
+        notify_period = 60
 
         self.z.createAlert(alert_name, username, alerts_type,
                            alert_expression, alert_severity, metric_name,
-                           emails, status, frequency)
+                           emails, status, notify_period)
         data = {
             'alert_name': alert_name,
             'username': username,
@@ -250,7 +250,7 @@ class TestZeusClient(unittest.TestCase):
             'metric_name': metric_name,
             'emails': emails,
             'status': status,
-            'frequency': frequency
+            'notify_period': notify_period
         }
 
         mock_requests.post.assert_called_with(
@@ -272,11 +272,11 @@ class TestZeusClient(unittest.TestCase):
         metric_name = "cpu.value"
         emails = "john1234@gmail.com"
         status = "active"
-        frequency = 60
+        notify_period = 60
 
         self.z.modifyAlert(alert_id, alert_name, username, alerts_type,
                            alert_expression, alert_severity, metric_name,
-                           emails, status, frequency)
+                           emails, status, notify_period)
         data = {
             'alert_name': alert_name,
             'username': username,
@@ -287,7 +287,7 @@ class TestZeusClient(unittest.TestCase):
             'metric_name': metric_name,
             'emails': emails,
             'status': status,
-            'frequency': frequency
+            'notify_period': notify_period
         }
 
         path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/' + str(alert_id)

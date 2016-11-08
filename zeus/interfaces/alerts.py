@@ -25,7 +25,7 @@ class AlertsInterface(object):
 
     def createAlert(
             self, alert_name, username, alerts_type, alert_expression,
-            alert_severity, metric_name, emails, status, frequency
+            alert_severity, metric_name, emails, status, notify_period
     ):
 
         """Creates a new alert, returns status code of creation
@@ -40,7 +40,7 @@ class AlertsInterface(object):
         :param metric_name: metric associated with the alert
         :param emails: emails to receive notification when the alert triggers
         :param status: if the alert is active or disable
-        :param frequency: frequency in which the expression is checked
+        :param notify_period: frequency of notifications
 
         :rtype: array
         """
@@ -55,7 +55,7 @@ class AlertsInterface(object):
             'metric_name': metric_name,
             'emails': emails,
             'status': status,
-            'frequency': frequency
+            'notify_period': notify_period
         }
         path = '/alerts/' + self.token
         header = {'content-type': 'application/json'}
@@ -74,7 +74,7 @@ class AlertsInterface(object):
     def modifyAlert(
             self, alert_id, alert_name, username, alerts_type,
             alert_expression, alert_severity, metric_name, emails, status,
-            frequency
+            notify_period
     ):
 
         """Modifies an existing alert with new data
@@ -89,7 +89,7 @@ class AlertsInterface(object):
         :param metric_name: metric associated with the alert
         :param emails: emails to receive notification when the alert triggers
         :param status: if the alert is active or disable
-        :param frequency: frequency in which the expression is checked
+        :param notify_period: frequency of notifications
 
         :rtype: array
         """
@@ -104,7 +104,7 @@ class AlertsInterface(object):
             'metric_name': metric_name,
             'emails': emails,
             'status': status,
-            'frequency': frequency
+            'notify_period': notify_period
         }
         path = '/alerts/' + self.token + '/' + str(alert_id)
         header = {'content-type': 'application/json'}
