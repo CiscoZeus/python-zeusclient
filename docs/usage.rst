@@ -118,13 +118,13 @@ To create an alert::
     z.createAlert(
         alert_name="alert_name",
         username="username",
-        alerts_type="metric",
+        alert_type="metric",
         alert_expression="cpu.value > 20",
         alert_severity="S1",
-        metric_name="cpu.value",
+        field_name="cpu.value",
         emails="john1234@gmail.com",
         status="active",
-        frequency=60
+        notify_period=60
     )
 
 Retrieving all alerts
@@ -143,13 +143,11 @@ To modify a specific alert::
         alert_id=42
         alert_name="alert_name",
         username="username",
-        alerts_type="metric",
-        alert_expression="cpu.value > 20",
+        alert_type="metric",
         alert_severity="S1",
-        metric_name="cpu.value",
         emails="john1234@gmail.com",
         status="active",
-        frequency=60
+        notify_period=60
     )
 
 Retrieving description on a specific alert
