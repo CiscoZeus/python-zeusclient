@@ -28,7 +28,7 @@ class TrigAlertsInterface(object):
         :rtype: array
         """
 
-        path = '/trigalerts/' + self.token
+        path = '/triggeredalerts/' + self.token
         return self.rest_client.sendGetRequest(path)
 
     def getTriggeredAlertsLast24Hours(self):
@@ -38,5 +38,5 @@ class TrigAlertsInterface(object):
         :rtype: array
         """
 
-        path = '/trigalerts/' + self.token + "/last24"
+        path = '/triggeredalerts/' + self.token + "/last24"
         return self.rest_client.sendGetRequest(path)
