@@ -76,6 +76,8 @@ def splitfunction(syslogFile):
         {"timestamp": gettime(line), "message": getmsg(line)}
         for line in syslogFile]
     return t
+
+
 path = os.getcwd() + "/example_syslog"
 token = raw_input("Enter Token: ")
 

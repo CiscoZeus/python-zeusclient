@@ -354,7 +354,7 @@ class TestZeusClient(unittest.TestCase):
 
         self.z.getTriggeredAlerts()
 
-        path = FAKE_SERVER + '/trigalerts/' + FAKE_TOKEN
+        path = FAKE_SERVER + '/triggeredalerts/' + FAKE_TOKEN
         mock_requests.get.assert_called_with(path, params=None)
 
     @mock.patch('zeus.interfaces.rest.requests')
@@ -362,7 +362,7 @@ class TestZeusClient(unittest.TestCase):
 
         self.z.getTriggeredAlertsLast24Hours()
 
-        path = FAKE_SERVER + '/trigalerts/' + FAKE_TOKEN + "/last24"
+        path = FAKE_SERVER + '/triggeredalerts/' + FAKE_TOKEN + "/last24"
         mock_requests.get.assert_called_with(path, params=None)
 
     @mock.patch('zeus.interfaces.rest.requests')
@@ -373,6 +373,7 @@ class TestZeusClient(unittest.TestCase):
     @mock.patch('zeus.interfaces.rest.requests')
     def tearDown(self, mock_requests):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()
