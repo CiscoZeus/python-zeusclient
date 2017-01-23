@@ -34,7 +34,7 @@ with open('test_requirements.txt') as f:
 
 setup(
     name='cisco-zeus',
-    version='0.2.2',
+    version='0.2.2.5',
     description="Python client for CiscoZeus.io. It allows a user to post/query logs and metrics using Zeus.",
     long_description=readme + '\n\n' + history,
     author="Marc Solanas Tarre",
@@ -42,9 +42,11 @@ setup(
     url='https://github.com/CiscoZeus/python-zeusclient.git',
     packages=[
         'zeus',
+        'zeus.interfaces',
     ],
-    package_dir={'zeus':
-                 'zeus'},
+    package_dir={
+        'zeus': 'zeus',
+    },
     include_package_data=True,
     install_requires=requirements,
     license="Apache License 2.0",
