@@ -16,6 +16,7 @@
 
 import requests
 from urlparse import urlparse
+from urlparse import urljoin
 
 METHOD_POST = 'POST'
 METHOD_GET = 'GET'
@@ -33,14 +34,15 @@ class RestClient(object):
         self.server = ''.join(url_parts)
 
     def _sendRequest(self, method, path, data=None, headers=None):
+        final_url = urljoin(self.server, path)
         if method == METHOD_POST:
-            r = requests.post(self.server + path, data=data, headers=headers)
+            r = requests.post(final_url, data=data, headers=headers)
         elif method == METHOD_GET:
-            r = requests.get(self.server + path, params=data)
+            r = requests.get(final_url, params=data)
         elif method == METHOD_DELETE:
-            r = requests.delete(self.server + path)
+            r = requests.delete(final_url)
         elif method == METHOD_PUT:
-            r = requests.put(self.server + path, data=data, headers=headers)
+            r = requests.put(final_url, data=data, headers=headers)
 
         if r.status_code == 500:
             raise Exception("Internal Server Error")
