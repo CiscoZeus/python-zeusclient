@@ -53,7 +53,7 @@ Metrics
 Metric name format
 ~~~~~~~~~~~
 
-All metric names must start with a letter or number (A-Za-z0-9) and can contain '.', '-' and '_'. 
+All metric names must start with a letter or number (A-Za-z0-9) and can contain '.', '-' and '_'.
 
 Send Metrics
 ~~~~~~~~~~~
@@ -105,3 +105,100 @@ Dates
 ----------------------
 
 All dates must be in the Unix timestamp format.
+
+
+Alerts
+----------------------
+
+Creating an alert
+~~~~~~~~~~~
+
+To create an alert::
+
+    z.createAlert(
+        alert_name="alert_name",
+        username="username",
+        alert_type="metric",
+        alert_expression="cpu.value > 20",
+        alert_severity="S1",
+        field_name="cpu.value",
+        emails="john1234@gmail.com",
+        status="active",
+        notify_period=60
+    )
+
+Retrieving all alerts
+~~~~~~~~~~~
+
+To retrieve all alerts::
+
+    z.getAlerts()
+
+Modifying an alert
+~~~~~~~~~~~
+
+To modify a specific alert::
+
+    z.modifyAlert(
+        alert_id=42
+        alert_name="alert_name",
+        username="username",
+        alert_type="metric",
+        alert_severity="S1",
+        emails="john1234@gmail.com",
+        status="active",
+        notify_period=60
+    )
+
+Retrieving description on a specific alert
+~~~~~~~~~~~
+
+To get information on an alert::
+
+    z.getAlert(
+        alert_id=25
+    )
+
+Deleting an alert
+~~~~~~~~~~~
+
+To delete a alert::
+
+    z.deleteAlert(
+        alert_id=25
+    )
+
+Bulk enabling alerts
+~~~~~~~~~~~
+
+To enable alerts::
+
+    z.enableAlerts(
+        alert_id_list=[25, 41, 7]
+    )
+
+Bulk disabling alerts
+~~~~~~~~~~~
+
+To disable alerts::
+
+    z.disableAlerts(
+        alert_id_list=[25, 41, 7]
+    )
+
+Triggered Alerts
+----------------------
+
+Retrieving all triggered alerts
+~~~~~~~~~~~
+
+To retrieve triggered alerts::
+
+    z.getTriggeredAlerts()
+
+Retrieving all triggered alerts in the last 24 hours
+~~~~~~~~~~~
+
+To retrieve all alerts triggered in the past 24 hours::
+
+    z.getTriggeredAlertsLast24Hours()
