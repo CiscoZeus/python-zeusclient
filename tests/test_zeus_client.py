@@ -72,7 +72,7 @@ class TestZeusClient(unittest.TestCase):
         mock_requests.post.assert_called_with(FAKE_SERVER + '/logs/' +
                                               FAKE_TOKEN + '/ZeusTest/',
                                               data={"logs": json.dumps(logs)},
-                                              headers=None)
+                                              headers=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_single_log(self, mock_requests):
@@ -81,7 +81,7 @@ class TestZeusClient(unittest.TestCase):
         mock_requests.post.assert_called_with(FAKE_SERVER + '/logs/' +
                                               FAKE_TOKEN + '/ZeusTest/',
                                               data={"logs": json.dumps(logs)},
-                                              headers=None)
+                                              headers=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_single_log_wrong_name(self, mock_requests):
@@ -111,7 +111,7 @@ class TestZeusClient(unittest.TestCase):
         mock_requests.post.assert_called_with(FAKE_SERVER + '/logs/' +
                                               FAKE_TOKEN + '/ZeusTest/',
                                               data={"logs": json.dumps(logs)},
-                                              headers=None)
+                                              headers=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_logs(self, mock_requests):
@@ -131,7 +131,7 @@ class TestZeusClient(unittest.TestCase):
                                                      'from': 123456789,
                                                      'to': 126235344235,
                                                      'offset': 23,
-                                                     'limit': 10})
+                                                     'limit': 10}, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_empty_metric(self, mock_requests):
@@ -141,7 +141,7 @@ class TestZeusClient(unittest.TestCase):
                                               FAKE_TOKEN + '/ZeusTest/',
                                               data={"metrics":
                                                     json.dumps(metrics)},
-                                              headers=None)
+                                              headers=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_single_metric(self, mock_requests):
@@ -151,7 +151,7 @@ class TestZeusClient(unittest.TestCase):
                                               FAKE_TOKEN + '/Zeus.Test/',
                                               data={"metrics":
                                                     json.dumps(metrics)},
-                                              headers=None)
+                                              headers=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_single_metric_wrong_name(self, mock_requests):
@@ -178,7 +178,7 @@ class TestZeusClient(unittest.TestCase):
                                               FAKE_TOKEN + '/ZeusTest/',
                                               data={"metrics":
                                                     json.dumps(metrics)},
-                                              headers=None)
+                                              headers=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_metric_values(self, mock_requests):
@@ -204,7 +204,7 @@ class TestZeusClient(unittest.TestCase):
                                                      'filter_condition':
                                                      'value > 90',
                                                      'limit': 10,
-                                                     'offset': 20})
+                                                     'offset': 20}, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_metric_names(self, mock_requests):
@@ -215,13 +215,16 @@ class TestZeusClient(unittest.TestCase):
                                              FAKE_TOKEN + '/_names/',
                                              params={'metric_name': 'ZeusTest',
                                                      'limit': 10,
-                                                     'offset': 20})
+                                                     'offset': 20}, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_delete_metric(self, mock_requests):
         self.z.deleteMetric('ZeusTest')
-        mock_requests.delete.assert_called_with(FAKE_SERVER + '/metrics/' +
-                                                FAKE_TOKEN + '/ZeusTest/')
+        mock_requests.delete.assert_called_with(
+            FAKE_SERVER + '/metrics/' +
+            FAKE_TOKEN + '/ZeusTest/',
+            timeout=20
+        )
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_create_alert(self, mock_requests):
@@ -256,8 +259,7 @@ class TestZeusClient(unittest.TestCase):
         mock_requests.post.assert_called_with(
             FAKE_SERVER + '/alerts/' +
             FAKE_TOKEN, data=json.dumps(data),
-            headers={'content-type': 'application/json'}
-        )
+            headers={'content-type': 'application/json'}, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_modify_alert(self, mock_requests):
@@ -293,15 +295,14 @@ class TestZeusClient(unittest.TestCase):
         path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/' + str(alert_id)
         mock_requests.put.assert_called_with(
             path, data=json.dumps(data),
-            headers={'content-type': 'application/json'}
-        )
+            headers={'content-type': 'application/json'}, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_alerts(self, mock_requests):
         self.z.getAlerts()
 
         path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN
-        mock_requests.get.assert_called_with(path, params=None)
+        mock_requests.get.assert_called_with(path, params=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_alert(self, mock_requests):
@@ -309,7 +310,7 @@ class TestZeusClient(unittest.TestCase):
         self.z.getAlert(alert_id)
 
         path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/' + str(alert_id)
-        mock_requests.get.assert_called_with(path, params=None)
+        mock_requests.get.assert_called_with(path, params=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_delete_alert(self, mock_requests):
@@ -317,7 +318,7 @@ class TestZeusClient(unittest.TestCase):
         self.z.deleteAlert(alert_id)
 
         path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/' + str(alert_id)
-        mock_requests.delete.assert_called_with(path)
+        mock_requests.delete.assert_called_with(path, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_enable_alerts(self, mock_requests):
@@ -331,8 +332,7 @@ class TestZeusClient(unittest.TestCase):
         path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/enable'
         mock_requests.post.assert_called_with(
             path, data=json.dumps(data),
-            headers={'content-type': 'application/json'}
-        )
+            headers={'content-type': 'application/json'}, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_disable_alerts(self, mock_requests):
@@ -346,8 +346,7 @@ class TestZeusClient(unittest.TestCase):
         path = FAKE_SERVER + '/alerts/' + FAKE_TOKEN + '/disable'
         mock_requests.post.assert_called_with(
             path, data=json.dumps(data),
-            headers={'content-type': 'application/json'}
-        )
+            headers={'content-type': 'application/json'}, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_triggered_alerts(self, mock_requests):
@@ -355,7 +354,7 @@ class TestZeusClient(unittest.TestCase):
         self.z.getTriggeredAlerts()
 
         path = FAKE_SERVER + '/triggeredalerts/' + FAKE_TOKEN
-        mock_requests.get.assert_called_with(path, params=None)
+        mock_requests.get.assert_called_with(path, params=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_triggered_alerts_last_24h(self, mock_requests):
@@ -363,7 +362,7 @@ class TestZeusClient(unittest.TestCase):
         self.z.getTriggeredAlertsLast24Hours()
 
         path = FAKE_SERVER + '/triggeredalerts/' + FAKE_TOKEN + "/last24"
-        mock_requests.get.assert_called_with(path, params=None)
+        mock_requests.get.assert_called_with(path, params=None, timeout=20)
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_delete_metric_wrong_name(self, mock_requests):
