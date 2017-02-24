@@ -22,6 +22,7 @@ METHOD_POST = 'POST'
 METHOD_GET = 'GET'
 METHOD_PUT = 'PUT'
 METHOD_DELETE = 'DELETE'
+TIMEOUT_SECONDS = 20
 
 
 class RestClient(object):
@@ -36,13 +37,19 @@ class RestClient(object):
     def _sendRequest(self, method, path, data=None, headers=None):
         final_url = urljoin(self.server, path)
         if method == METHOD_POST:
-            r = requests.post(final_url, data=data, headers=headers)
+            r = requests.post(
+                final_url, data=data, headers=headers,
+                timeout=TIMEOUT_SECONDS
+            )
         elif method == METHOD_GET:
-            r = requests.get(final_url, params=data)
+            r = requests.get(final_url, params=data, timeout=TIMEOUT_SECONDS)
         elif method == METHOD_DELETE:
-            r = requests.delete(final_url)
+            r = requests.delete(final_url, timeout=TIMEOUT_SECONDS)
         elif method == METHOD_PUT:
-            r = requests.put(final_url, data=data, headers=headers)
+            r = requests.put(
+                final_url, data=data, headers=headers,
+                timeout=TIMEOUT_SECONDS
+            )
 
         if r.status_code == 500:
             raise Exception("Internal Server Error")
