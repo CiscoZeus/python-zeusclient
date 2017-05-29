@@ -19,9 +19,12 @@ from utils import validateMetricName, validateDates
 
 
 class MetricsInterface(object):
-
     def __init__(self, user_token, rest_client):
         self.token = user_token
+        self.headers = {
+            'Authorization': "Bearer {}".format(self.token),
+            'content-type': 'application/json'
+        }
         self.rest_client = rest_client
 
     def sendMetric(self, metric_name, metrics):
@@ -34,10 +37,11 @@ class MetricsInterface(object):
         :rtype: dict
 
         """
+        url = '/metrics/{}/{}/'.format(self.token, metric_name)
         validateMetricName(metric_name)
         data = {'metrics': json.dumps(metrics)}
-        return self.rest_client.sendPostRequest('/metrics/' + self.token +
-                                                '/' + metric_name + '/', data)
+        return self.rest_client.sendPostRequest(
+            url, data=data, headers=self.headers)
 
     def getMetric(self, metric_name,
                   from_date=None,
@@ -64,6 +68,7 @@ class MetricsInterface(object):
         :rtype: array
 
         """
+        url = '/metrics/{}/_values/'.format(self.token)
         validateDates(from_date, to_date)
         data = {"metric_name": metric_name}
         if from_date:
@@ -87,8 +92,8 @@ class MetricsInterface(object):
         if offset:
             data['offset'] = offset
 
-        return self.rest_client.sendGetRequest('/metrics/' + self.token +
-                                               '/_values/', data)
+        return self.rest_client.sendGetRequest(
+            url=url, data=data, headers=self.headers)
 
     def getMetricNames(self, metric_name=None, limit=None, offset=None):
         """Return ``array`` of ``string`` with the metric names that match the
@@ -101,6 +106,7 @@ class MetricsInterface(object):
         :rtype: array
 
         """
+        url = '/metrics/{}/_names/'.format(self.token)
         data = {}
         if metric_name:
             data['metric_name'] = metric_name
@@ -109,8 +115,8 @@ class MetricsInterface(object):
         if offset:
             data['offset'] = offset
 
-        return self.rest_client.sendGetRequest('/metrics/' + self.token +
-                                               '/_names/', data)
+        return self.rest_client.sendGetRequest(
+            url=url, data=data, headers=self.headers)
 
     def deleteMetric(self, metric_name):
         """Delete an entire metric from Zeus.
@@ -119,7 +125,8 @@ class MetricsInterface(object):
         :rtype: boolean
 
         """
+        url = '/metrics/{}/{}/'.format(self.token, metric_name)
         validateMetricName(metric_name)
         return self.rest_client.sendDeleteRequest(
-            '/metrics/' + self.token + '/' + metric_name + '/', None
+            url, data=None, headers=self.headers
         )

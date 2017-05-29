@@ -16,27 +16,30 @@
 
 
 class TrigAlertsInterface(object):
-
     def __init__(self, user_token, rest_client):
         self.token = user_token
+        self.headers = {
+            'Authorization': "Bearer {}".format(self.token),
+            'content-type': 'application/json'
+        }
         self.rest_client = rest_client
 
     def getTriggeredAlerts(self):
-
         """Return all triggered alerts
 
         :rtype: array
         """
+        url = '/triggeredalerts/{}'.format(self.token)
 
-        path = '/triggeredalerts/' + self.token
-        return self.rest_client.sendGetRequest(path)
+        return self.rest_client.sendGetRequest(
+            url=url, headers=self.headers)
 
     def getTriggeredAlertsLast24Hours(self):
-
         """Return all triggered alerts in the last 24 hours
 
         :rtype: array
         """
+        url = '/triggeredalerts/{}/last24'.format(self.token)
 
-        path = '/triggeredalerts/' + self.token + "/last24"
-        return self.rest_client.sendGetRequest(path)
+        return self.rest_client.sendGetRequest(
+            url=url, headers=self.headers)

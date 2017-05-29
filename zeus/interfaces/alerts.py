@@ -18,16 +18,18 @@ import json
 
 
 class AlertsInterface(object):
-
     def __init__(self, user_token, rest_client):
         self.token = user_token
+        self.headers = {
+            'Authorization': "Bearer {}".format(self.token),
+            'content-type': 'application/json'
+        }
         self.rest_client = rest_client
 
     def createAlert(
-            self, alert_name, username, alerts_type, alert_expression,
-            alert_severity, metric_name, emails, status, notify_period
+        self, alert_name, username, alerts_type, alert_expression,
+        alert_severity, metric_name, emails, status, notify_period
     ):
-
         """Creates a new alert, returns status code of creation
         and alert parameters
 
@@ -57,13 +59,12 @@ class AlertsInterface(object):
             'status': status,
             'notify_period': notify_period
         }
-        path = '/alerts/' + self.token
-        header = {'content-type': 'application/json'}
+        url = '/alerts/{}'.format(self.token)
 
-        return self.rest_client.sendPostRequest(path, json.dumps(data), header)
+        return self.rest_client.sendPostRequest(
+            url, json.dumps(data), self.headers)
 
     def getAlerts(self):
-
         """Return all alerts
 
         :rtype: array
@@ -72,11 +73,10 @@ class AlertsInterface(object):
         return self.rest_client.sendGetRequest(path)
 
     def modifyAlert(
-            self, alert_id, alert_name, username, alerts_type,
-            alert_expression, alert_severity, metric_name, emails, status,
-            notify_period
+        self, alert_id, alert_name, username, alerts_type,
+        alert_expression, alert_severity, metric_name, emails, status,
+        notify_period
     ):
-
         """Modifies an existing alert with new data
 
         :param alert_id: Id of the alert to be modified
@@ -107,12 +107,11 @@ class AlertsInterface(object):
             'notify_period': notify_period
         }
         path = '/alerts/' + self.token + '/' + str(alert_id)
-        header = {'content-type': 'application/json'}
 
-        return self.rest_client.sendPutRequest(path, json.dumps(data), header)
+        return self.rest_client.sendPutRequest(
+            path, json.dumps(data), self.headers)
 
     def getAlert(self, alert_id):
-
         """Return an specific alert information
 
         :param alert_id: Id of the alert to be returned
@@ -133,7 +132,6 @@ class AlertsInterface(object):
         return self.rest_client.sendDeleteRequest(path)
 
     def enableAlerts(self, alert_id_list):
-
         """Bulk enable alerts
 
         :param alert_id_list: List of ids of the alerts to be enabled
@@ -144,12 +142,11 @@ class AlertsInterface(object):
             'id': alert_id_list
         }
         path = '/alerts/' + self.token + '/enable'
-        header = {'content-type': 'application/json'}
 
-        return self.rest_client.sendPostRequest(path, json.dumps(data), header)
+        return self.rest_client.sendPostRequest(
+            path, json.dumps(data), self.headers)
 
     def disableAlerts(self, alert_id_list):
-
         """Bulk disable alerts
 
         :param alert_id_list: List of ids of the alerts to be disabled
@@ -161,6 +158,6 @@ class AlertsInterface(object):
             'id': alert_id_list
         }
         path = '/alerts/' + self.token + '/disable'
-        header = {'content-type': 'application/json'}
 
-        return self.rest_client.sendPostRequest(path, json.dumps(data), header)
+        return self.rest_client.sendPostRequest(
+            path, json.dumps(data), self.headers)

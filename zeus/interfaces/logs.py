@@ -19,9 +19,12 @@ from utils import validateLogName, validateDates
 
 
 class LogsInterface(object):
-
     def __init__(self, user_token, rest_client):
         self.token = user_token
+        self.headers = {
+            'Authorization': "Bearer {}".format(self.token),
+            'content-type': 'application/json'
+        }
         self.rest_client = rest_client
 
     def sendLog(self, log_name, logs):
@@ -33,19 +36,15 @@ class LogsInterface(object):
         :rtype: dict
 
         """
+        url = '/logs/{}/{}/'.format(self.token, log_name)
+
         validateLogName(log_name)
         data = {'logs': json.dumps(logs)}
-        return self.rest_client.sendPostRequest('/logs/' + self.token +
-                                                '/' + log_name + '/', data)
 
-    def getLog(self,
-               log_name,
-               attribute_name=None,
-               pattern=None,
-               from_date=None,
-               to_date=None,
-               offset=None,
-               limit=None):
+        return self.rest_client.sendPostRequest(url, data, self.headers)
+
+    def getLog(self, log_name, attribute_name=None, pattern=None,
+               from_date=None, to_date=None, offset=None, limit=None):
         """Return ``array`` of ``dict`` with the logs that match the params.
 
         :param string log_name: Name of the log.
@@ -59,6 +58,8 @@ class LogsInterface(object):
         :rtype: array
 
         """
+        url = '/logs/{}/'.format(self.token)
+
         validateDates(from_date, to_date)
         data = {"log_name": log_name}
         if attribute_name:
@@ -74,5 +75,4 @@ class LogsInterface(object):
         if limit:
             data['limit'] = limit
 
-        return self.rest_client.sendGetRequest('/logs/' + self.token + '/',
-                                               data)
+        return self.rest_client.sendGetRequest(url, data, self.headers)
