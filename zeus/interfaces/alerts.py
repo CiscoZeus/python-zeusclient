@@ -69,7 +69,7 @@ class AlertsInterface(object):
 
         :rtype: array
         """
-        path = '/alerts/' + self.token
+        path = '/alerts/{}'.format(self.token)
         return self.rest_client.sendGetRequest(path)
 
     def modifyAlert(
@@ -106,7 +106,7 @@ class AlertsInterface(object):
             'status': status,
             'notify_period': notify_period
         }
-        path = '/alerts/' + self.token + '/' + str(alert_id)
+        path = '/alerts/{}/{}'.format(self.token, str(alert_id))
 
         return self.rest_client.sendPutRequest(
             path, json.dumps(data), self.headers)
@@ -118,7 +118,8 @@ class AlertsInterface(object):
 
         :rtype: array
         """
-        path = '/alerts/' + self.token + '/' + str(alert_id)
+        path = '/alerts/{}/{}'.format(self.token, str(alert_id))
+
         return self.rest_client.sendGetRequest(path)
 
     def deleteAlert(self, alert_id):
@@ -128,7 +129,8 @@ class AlertsInterface(object):
 
         :rtype: array
         """
-        path = '/alerts/' + self.token + '/' + str(alert_id)
+        path = '/alerts/{}/{}'.format(self.token, str(alert_id))
+
         return self.rest_client.sendDeleteRequest(path)
 
     def enableAlerts(self, alert_id_list):
@@ -138,10 +140,8 @@ class AlertsInterface(object):
 
         :rtype: array
         """
-        data = {
-            'id': alert_id_list
-        }
-        path = '/alerts/' + self.token + '/enable'
+        path = '/alerts/{}/enable'.format(self.token)
+        data = {'id': alert_id_list}
 
         return self.rest_client.sendPostRequest(
             path, json.dumps(data), self.headers)
@@ -153,11 +153,8 @@ class AlertsInterface(object):
 
         :rtype: array
         """
-
-        data = {
-            'id': alert_id_list
-        }
-        path = '/alerts/' + self.token + '/disable'
+        path = '/alerts/{}/disable'.format(self.token)
+        data = {'id': alert_id_list}
 
         return self.rest_client.sendPostRequest(
             path, json.dumps(data), self.headers)

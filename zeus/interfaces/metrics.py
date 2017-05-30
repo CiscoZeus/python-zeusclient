@@ -37,11 +37,13 @@ class MetricsInterface(object):
         :rtype: dict
 
         """
-        url = '/metrics/{}/{}/'.format(self.token, metric_name)
+
+        url = '/metrics/{}/{}'.format(self.token, metric_name)
         validateMetricName(metric_name)
         data = {'metrics': json.dumps(metrics)}
+
         return self.rest_client.sendPostRequest(
-            url, data=data, headers=self.headers)
+            url, data=data, headers=self.__build_header(metric_name))
 
     def getMetric(self, metric_name,
                   from_date=None,
@@ -68,7 +70,7 @@ class MetricsInterface(object):
         :rtype: array
 
         """
-        url = '/metrics/{}/_values/'.format(self.token)
+        url = '/metrics/{}/_values'.format(self.token)
         validateDates(from_date, to_date)
         data = {"metric_name": metric_name}
         if from_date:
@@ -93,7 +95,7 @@ class MetricsInterface(object):
             data['offset'] = offset
 
         return self.rest_client.sendGetRequest(
-            url=url, data=data, headers=self.headers)
+            url=url, data=data, headers=self.__build_header(metric_name))
 
     def getMetricNames(self, metric_name=None, limit=None, offset=None):
         """Return ``array`` of ``string`` with the metric names that match the
@@ -106,7 +108,7 @@ class MetricsInterface(object):
         :rtype: array
 
         """
-        url = '/metrics/{}/_names/'.format(self.token)
+        url = '/metrics/{}/_names'.format(self.token)
         data = {}
         if metric_name:
             data['metric_name'] = metric_name
@@ -116,7 +118,7 @@ class MetricsInterface(object):
             data['offset'] = offset
 
         return self.rest_client.sendGetRequest(
-            url=url, data=data, headers=self.headers)
+            url=url, data=data, headers=self.__build_header(metric_name))
 
     def deleteMetric(self, metric_name):
         """Delete an entire metric from Zeus.
@@ -125,8 +127,17 @@ class MetricsInterface(object):
         :rtype: boolean
 
         """
-        url = '/metrics/{}/{}/'.format(self.token, metric_name)
+        url = '/metrics/{}/{}'.format(self.token, metric_name)
         validateMetricName(metric_name)
         return self.rest_client.sendDeleteRequest(
-            url, data=None, headers=self.headers
-        )
+            url, data=None, headers=self.__build_header(metric_name))
+
+    def __build_header(self, bucket_name):
+        """
+        Make HTTP Header
+        :param bucket_name: bucket name
+        :type bucket_name: str
+        :return: Header Object
+        :rtype: dict
+        """
+        return dict(self.headers, **{'Bucket-Name': bucket_name})

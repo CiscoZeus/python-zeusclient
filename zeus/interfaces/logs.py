@@ -36,12 +36,13 @@ class LogsInterface(object):
         :rtype: dict
 
         """
-        url = '/logs/{}/{}/'.format(self.token, log_name)
+        url = '/logs/{}/{}'.format(self.token, log_name)
 
         validateLogName(log_name)
         data = {'logs': json.dumps(logs)}
 
-        return self.rest_client.sendPostRequest(url, data, self.headers)
+        return self.rest_client.sendPostRequest(
+            url, data, self.__build_header(log_name))
 
     def getLog(self, log_name, attribute_name=None, pattern=None,
                from_date=None, to_date=None, offset=None, limit=None):
@@ -58,7 +59,7 @@ class LogsInterface(object):
         :rtype: array
 
         """
-        url = '/logs/{}/'.format(self.token)
+        url = '/logs/{}'.format(self.token)
 
         validateDates(from_date, to_date)
         data = {"log_name": log_name}
@@ -75,4 +76,15 @@ class LogsInterface(object):
         if limit:
             data['limit'] = limit
 
-        return self.rest_client.sendGetRequest(url, data, self.headers)
+        return self.rest_client.sendGetRequest(
+            url, data, self.__build_header(log_name))
+
+    def __build_header(self, bucket_name):
+        """
+        Make HTTP Header
+        :param bucket_name: bucket name
+        :type bucket_name: str
+        :return: Header Object
+        :rtype: dict
+        """
+        return dict(self.headers, **{'Bucket-Name': bucket_name})
