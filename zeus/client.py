@@ -21,11 +21,9 @@ from interfaces.alerts import AlertsInterface
 from interfaces.trigalerts import TrigAlertsInterface
 
 
-class ZeusClient(MetricsInterface, LogsInterface, AlertsInterface,
-                 TrigAlertsInterface):
-    """Zeus Client class, implementing wrapper methods for the
-    Zeus API.
-
+class ZeusClient(MetricsInterface, LogsInterface, AlertsInterface, TrigAlertsInterface):
+    """
+    Zeus Client class, implementing wrapper methods for the Zeus API.
     """
 
     def __init__(self, user_token, server):
@@ -36,4 +34,18 @@ class ZeusClient(MetricsInterface, LogsInterface, AlertsInterface,
         }
         rest_client = RestClient(server)
         self.server = rest_client.server
+        self.bucket_name = None
+
         super(ZeusClient, self).__init__(user_token, rest_client)
+
+    def bucket(self, bucket_name):
+        """
+        This method is for method chain purpose.
+
+        :param bucket_name: target bucket name
+        :type bucket_name: str
+        :return: self object.
+        :rtype: ZeusClient
+        """
+        self.bucket_name = bucket_name
+        return self

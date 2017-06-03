@@ -24,10 +24,12 @@ Tests for `zeus` module.
 
 import json
 import mock
+import posixpath
 import unittest
-from zeus.interfaces.utils import validateDates, ZeusException
+import urlparse
 
 from zeus import client
+from zeus.interfaces.utils import validateDates, ZeusException
 
 FAKE_TOKEN = 'ZeUsRoCkS'
 FAKE_SERVER = 'https://zeus.rocks'
@@ -81,7 +83,8 @@ class TestZeusClient(unittest.TestCase):
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_empty_log(self, mock_requests):
         logs = []
-        url = '{}/logs/{}/ZeusTest'.format(FAKE_SERVER, FAKE_TOKEN)
+        url = urlparse.urljoin(FAKE_SERVER,
+                               posixpath.join('logs', FAKE_TOKEN, 'ZeusTest'))
         self.z.sendLog('ZeusTest', logs)
         mock_requests.post.assert_called_with(
             url, data={"logs": json.dumps(logs)},
@@ -89,7 +92,8 @@ class TestZeusClient(unittest.TestCase):
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_single_log(self, mock_requests):
-        url = '{}/logs/{}/ZeusTest'.format(FAKE_SERVER, FAKE_TOKEN)
+        url = urlparse.urljoin(
+            FAKE_SERVER, posixpath.join('logs', FAKE_TOKEN, 'ZeusTest'))
         logs = [{"timestamp": 123541423, "key": "TestLog", "key2": 123}]
         self.z.sendLog('ZeusTest', logs)
         mock_requests.post.assert_called_with(
@@ -116,7 +120,8 @@ class TestZeusClient(unittest.TestCase):
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_multiple_logs(self, mock_requests):
-        url = '{}/logs/{}/ZeusTest'.format(FAKE_SERVER, FAKE_TOKEN)
+        url = urlparse.urljoin(
+            FAKE_SERVER, posixpath.join('logs', FAKE_TOKEN, 'ZeusTest'))
         logs = [{"timestamp": 123541423, "message": "TestLog"},
                 {"timestamp": 123541424, "message": "TestLog2"},
                 {"timestamp": 123541425, "message": "TestLog3"}, ]
@@ -127,7 +132,7 @@ class TestZeusClient(unittest.TestCase):
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_get_logs(self, mock_requests):
-        url = '{}/logs/{}'.format(FAKE_SERVER, FAKE_TOKEN)
+        url = urlparse.urljoin(FAKE_SERVER, posixpath.join('logs', FAKE_TOKEN))
         self.z.getLog('ZeusTest',
                       attribute_name='message',
                       pattern='*',
@@ -149,7 +154,8 @@ class TestZeusClient(unittest.TestCase):
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_empty_metric(self, mock_requests):
-        url = '{}/metrics/{}/ZeusTest'.format(FAKE_SERVER, FAKE_TOKEN)
+        url = urlparse.urljoin(
+            FAKE_SERVER, posixpath.join('metrics', FAKE_TOKEN, 'ZeusTest'))
         metrics = []
         self.z.sendMetric('ZeusTest', metrics)
         mock_requests.post.assert_called_with(
@@ -158,7 +164,8 @@ class TestZeusClient(unittest.TestCase):
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_single_metric(self, mock_requests):
-        url = '{}/metrics/{}/Zeus.Test'.format(FAKE_SERVER, FAKE_TOKEN)
+        url = urlparse.urljoin(
+            FAKE_SERVER, posixpath.join('metrics', FAKE_TOKEN, 'Zeus.Test'))
         metrics = [{"timestamp": 123541423, "value": 0}]
         self.z.sendMetric('Zeus.Test', metrics)
         mock_requests.post.assert_called_with(
@@ -182,7 +189,8 @@ class TestZeusClient(unittest.TestCase):
 
     @mock.patch('zeus.interfaces.rest.requests')
     def test_post_multiple_metrics(self, mock_requests):
-        url = '{}/metrics/{}/ZeusTest'.format(FAKE_SERVER, FAKE_TOKEN)
+        url = urlparse.urljoin(
+            FAKE_SERVER, posixpath.join('metrics', FAKE_TOKEN, 'ZeusTest'))
         metrics = [{"timestamp": 123541423, "value": 0},
                    {"timestamp": 123541424, "value": 1},
                    {"timestamp": 123541425, "value": 2.0}, ]
