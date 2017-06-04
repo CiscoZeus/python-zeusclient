@@ -17,7 +17,7 @@
 import re
 
 
-def validateMetricName(name):
+def validate_metric_name(name):
     if name is None:
         raise ZeusException("Invalid input. Metric name cannot be None.")
     name_length = len(name)
@@ -30,7 +30,7 @@ def validateMetricName(name):
                             "_ - or .")
 
 
-def validateDates(from_date, to_date):
+def validate_dates(from_date, to_date):
     try:
         from_date_value = float(from_date) if from_date else None
         to_date_value = float(to_date) if to_date else None
@@ -43,7 +43,7 @@ def validateDates(from_date, to_date):
                             "after to_date.")
 
 
-def validateLogName(name):
+def validate_log_name(name):
     if name is None:
         raise ZeusException("Invalid input. Log name cannot be None.")
     name_length = len(name)

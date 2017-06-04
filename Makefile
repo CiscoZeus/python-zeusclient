@@ -35,10 +35,10 @@ clean-test:
 	rm -fr htmlcov/
 
 lint:
-	flake8 zeus tests
+	@flake8 zeus tests
 
 test:
-	python setup.py test
+	@python setup.py test
 
 test-all:
 	tox

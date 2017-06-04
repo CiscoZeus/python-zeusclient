@@ -15,129 +15,117 @@
 # limitations under the License.
 
 import json
-from utils import validateMetricName, validateDates
+from utils import validate_metric_name, validate_dates
 
 
-class MetricsInterface(object):
-    def __init__(self, user_token, rest_client):
-        self.token = user_token
-        self.headers = {
-            'Authorization': "Bearer {}".format(self.token),
-            'content-type': 'application/json'
-        }
-        self.rest_client = rest_client
+def send_metric(cls, metric_name, metrics):
+    """Return ``dict`` saying how many *metrics* were successfully inserted
+    with *metric_name*.
 
-    def sendMetric(self, metric_name, metrics):
-        """Return ``dict`` saying how many *metrics* were successfully inserted
-        with *metric_name*.
+    :param cls: class object
+    :type cls: ZeusClient
+    :param string metric_name: String with the name of the metric.
+    :param dict metrics: ``array`` of ``dict`` containing the metrics to
+     send.
+    :rtype: dict
+    """
 
-        :param string metric_name: String with the name of the metric.
-        :param dict metrics: ``array`` of ``dict`` containing the metrics to
-         send.
-        :rtype: dict
+    path = '/metrics/{}/{}'.format(cls.token, metric_name)
+    validate_metric_name(metric_name)
+    data = {'metrics': json.dumps(metrics)}
 
-        """
+    return cls._request('POST', path=path, data=data)
 
-        url = '/metrics/{}/{}'.format(self.token, metric_name)
-        validateMetricName(metric_name)
-        data = {'metrics': json.dumps(metrics)}
 
-        return self.rest_client.sendPostRequest(
-            url, data=data, headers=self.__build_header(metric_name))
+def get_metric(cls, metric_name,
+               from_date=None,
+               to_date=None,
+               aggregator_function=None,
+               aggregator_column=None,
+               group_interval=None,
+               filter_condition=None,
+               offset=None,
+               limit=None):
+    """Return ``array`` of ``dict`` with the metrics that match the params.
 
-    def getMetric(self, metric_name,
-                  from_date=None,
-                  to_date=None,
-                  aggregator_function=None,
-                  aggregator_column=None,
-                  group_interval=None,
-                  filter_condition=None,
-                  offset=None,
-                  limit=None):
-        """Return ``array`` of ``dict`` with the metrics that match the params.
+    :param cls: class object
+    :type cls: ZeusClient
+    :param string metric_name: Name of the metric.
+    :param string from_date: Unix formatted start date.
+    :param string to_date: Unix formatted end date.
+    :param string aggregator_function: Aggregator function. ``sum``,
+    ``count``, ``min``, ``max``,...
+    :param string aggregator_column: Column to which
+    ``aggregator_function`` is to be applied.
+    :param string group_interval: Intervals in which to group the results.
+    :param string filter_condition: Filters to be applied to metric values.
+    :param string offset: Result offset.
+    :param string limit: Max number of results in the return.
+    :rtype: array
+    """
 
-        :param string metric_name: Name of the metric.
-        :param string from_date: Unix formatted start date.
-        :param string to_date: Unix formatted end date.
-        :param string aggregator_function: Aggregator function. ``sum``,
-        ``count``, ``min``, ``max``,...
-        :param string aggregator_column: Column to which
-        ``aggregator_function`` is to be applied.
-        :param string group_interval: Intervals in which to group the results.
-        :param string filter_condition: Filters to be applied to metric values.
-        :param string offset: Result offset.
-        :param string limit: Max number of results in the return.
-        :rtype: array
+    path = '/metrics/{}/_values'.format(cls.token)
+    validate_dates(from_date, to_date)
+    data = {"metric_name": metric_name}
+    if from_date:
+        data['from'] = from_date
+    if to_date:
+        data['to'] = to_date
+    if aggregator_function:
+        # EG. 'sum'
+        data['aggregator_function'] = aggregator_function
+    if aggregator_column:
+        # EG. 'sum'
+        data['aggregator_column'] = aggregator_column
+    if group_interval:
+        # EG. '1m'
+        data['group_interval'] = group_interval
+    if filter_condition:
+        # EG. '"Values" < 33'
+        data['filter_condition'] = filter_condition
+    if limit:
+        data['limit'] = limit
+    if offset:
+        data['offset'] = offset
 
-        """
-        url = '/metrics/{}/_values'.format(self.token)
-        validateDates(from_date, to_date)
-        data = {"metric_name": metric_name}
-        if from_date:
-            data['from'] = from_date
-        if to_date:
-            data['to'] = to_date
-        if aggregator_function:
-            # EG. 'sum'
-            data['aggregator_function'] = aggregator_function
-        if aggregator_column:
-            # EG. 'sum'
-            data['aggregator_column'] = aggregator_column
-        if group_interval:
-            # EG. '1m'
-            data['group_interval'] = group_interval
-        if filter_condition:
-            # EG. '"Values" < 33'
-            data['filter_condition'] = filter_condition
-        if limit:
-            data['limit'] = limit
-        if offset:
-            data['offset'] = offset
+    return cls._request('GET', path=path, data=data)
 
-        return self.rest_client.sendGetRequest(
-            url=url, data=data, headers=self.__build_header(metric_name))
 
-    def getMetricNames(self, metric_name=None, limit=None, offset=None):
-        """Return ``array`` of ``string`` with the metric names that match the
-        params.
+def get_metric_names(cls, metric_name=None, limit=None, offset=None):
+    """Return ``array`` of ``string`` with the metric names that match the
+    params.
 
-        :param string metric_name: Pattern for the metric name.
-        :param string limit: Max number of results in the return.
-        :param string limit: Starting offset in the resulting list. The default
-        value is 0 (first result).
-        :rtype: array
+    :param cls: class object
+    :type cls: ZeusClient
+    :param string metric_name: Pattern for the metric name.
+    :param string limit: Max number of results in the return.
+    :param string limit: Starting offset in the resulting list. The default
+    value is 0 (first result).
+    :rtype: array
+    """
 
-        """
-        url = '/metrics/{}/_names'.format(self.token)
-        data = {}
-        if metric_name:
-            data['metric_name'] = metric_name
-        if limit:
-            data['limit'] = limit
-        if offset:
-            data['offset'] = offset
+    path = '/metrics/{}/_names'.format(cls.token)
+    data = {}
+    if metric_name:
+        data['metric_name'] = metric_name
+    if limit:
+        data['limit'] = limit
+    if offset:
+        data['offset'] = offset
 
-        return self.rest_client.sendGetRequest(
-            url=url, data=data, headers=self.__build_header(metric_name))
+    return cls._request('GET', path=path, data=data)
 
-    def deleteMetric(self, metric_name):
-        """Delete an entire metric from Zeus.
 
-        :param string metric_name: Pattern for the metric name.
-        :rtype: boolean
+def delete_metric(cls, metric_name):
+    """Delete an entire metric from Zeus.
 
-        """
-        url = '/metrics/{}/{}'.format(self.token, metric_name)
-        validateMetricName(metric_name)
-        return self.rest_client.sendDeleteRequest(
-            url, data=None, headers=self.__build_header(metric_name))
+    :param cls: class object
+    :type cls: ZeusClient
+    :param string metric_name: Pattern for the metric name.
+    :rtype: boolean
+    """
 
-    def __build_header(self, bucket_name):
-        """
-        Make HTTP Header
-        :param bucket_name: bucket name
-        :type bucket_name: str
-        :return: Header Object
-        :rtype: dict
-        """
-        return dict(self.headers, **{'Bucket-Name': bucket_name})
+    path = '/metrics/{}/{}'.format(cls.token, metric_name)
+    validate_metric_name(metric_name)
+
+    return cls._request('DELETE', path=path)

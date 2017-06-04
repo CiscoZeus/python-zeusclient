@@ -17,144 +17,151 @@
 import json
 
 
-class AlertsInterface(object):
-    def __init__(self, user_token, rest_client):
-        self.token = user_token
-        self.headers = {
-            'Authorization': "Bearer {}".format(self.token),
-            'content-type': 'application/json'
-        }
-        self.rest_client = rest_client
+def create_alert(
+    cls, alert_name, username, alerts_type, alert_expression,
+    alert_severity, metric_name, emails, status, notify_period
+):
+    """Creates a new alert, returns status code of creation
+    and alert parameters
 
-    def createAlert(
-        self, alert_name, username, alerts_type, alert_expression,
-        alert_severity, metric_name, emails, status, notify_period
-    ):
-        """Creates a new alert, returns status code of creation
-        and alert parameters
+    :param cls: class object
+    :type cls: ZeusClient
+    :param alert_name: Name of the alert
+    :param username: User the alert belongs to
+    :param alerts_type: "metric" or "log"
+    :param alert_expression: expression to evaluate the alert
+    (eg. "cpu.value > 20")
+    :param alert_severity: severity level of the alert
+    :param metric_name: metric associated with the alert
+    :param emails: emails to receive notification when the alert triggers
+    :param status: if the alert is active or disable
+    :param notify_period: frequency of notifications
 
-        :param alert_name: Name of the alert
-        :param username: User the alert belongs to
-        :param alerts_type: "metric" or "log"
-        :param alert_expression: expression to evaluate the alert
-        (eg. "cpu.value > 20")
-        :param alert_severity: severity level of the alert
-        :param metric_name: metric associated with the alert
-        :param emails: emails to receive notification when the alert triggers
-        :param status: if the alert is active or disable
-        :param notify_period: frequency of notifications
+    :rtype: array
+    """
 
-        :rtype: array
-        """
+    data = {
+        'alert_name': alert_name,
+        'username': username,
+        'token': cls.token,
+        'alerts_type': alerts_type,
+        'alert_expression': alert_expression,
+        'alert_severity': alert_severity,
+        'metric_name': metric_name,
+        'emails': emails,
+        'status': status,
+        'notify_period': notify_period
+    }
+    path = '/alerts/{}'.format(cls.token)
 
-        data = {
-            'alert_name': alert_name,
-            'username': username,
-            'token': self.token,
-            'alerts_type': alerts_type,
-            'alert_expression': alert_expression,
-            'alert_severity': alert_severity,
-            'metric_name': metric_name,
-            'emails': emails,
-            'status': status,
-            'notify_period': notify_period
-        }
-        url = '/alerts/{}'.format(self.token)
+    return cls._request('POST', path=path, data=json.dumps(data))
 
-        return self.rest_client.sendPostRequest(
-            url, json.dumps(data), self.headers)
 
-    def getAlerts(self):
-        """Return all alerts
+def get_alerts(cls):
+    """Return all alerts
 
-        :rtype: array
-        """
-        path = '/alerts/{}'.format(self.token)
-        return self.rest_client.sendGetRequest(path)
+    :param cls: class object
+    :type cls: ZeusClient
 
-    def modifyAlert(
-        self, alert_id, alert_name, username, alerts_type,
-        alert_expression, alert_severity, metric_name, emails, status,
-        notify_period
-    ):
-        """Modifies an existing alert with new data
+    :rtype: array
+    """
+    path = '/alerts/{}'.format(cls.token)
+    return cls._request('GET', path=path)
 
-        :param alert_id: Id of the alert to be modified
-        :param alert_name: Name of the alert
-        :param username: User the alert belongs to
-        :param alerts_type: "metric" or "log"
-        :param alert_expression: expression to evaluate the alert
-        (eg. "cpu.value > 20")
-        :param alert_severity: severity level of the alert
-        :param metric_name: metric associated with the alert
-        :param emails: emails to receive notification when the alert triggers
-        :param status: if the alert is active or disable
-        :param notify_period: frequency of notifications
 
-        :rtype: array
-        """
+def modify_alert(
+    cls, alert_id, alert_name, username, alerts_type,
+    alert_expression, alert_severity, metric_name, emails, status,
+    notify_period
+):
+    """Modifies an existing alert with new data
 
-        data = {
-            'alert_name': alert_name,
-            'username': username,
-            'token': self.token,
-            'alerts_type': alerts_type,
-            'alert_expression': alert_expression,
-            'alert_severity': alert_severity,
-            'metric_name': metric_name,
-            'emails': emails,
-            'status': status,
-            'notify_period': notify_period
-        }
-        path = '/alerts/{}/{}'.format(self.token, str(alert_id))
+    :param cls: class object
+    :type cls: ZeusClient
+    :param alert_id: Id of the alert to be modified
+    :param alert_name: Name of the alert
+    :param username: User the alert belongs to
+    :param alerts_type: "metric" or "log"
+    :param alert_expression: expression to evaluate the alert
+    (eg. "cpu.value > 20")
+    :param alert_severity: severity level of the alert
+    :param metric_name: metric associated with the alert
+    :param emails: emails to receive notification when the alert triggers
+    :param status: if the alert is active or disable
+    :param notify_period: frequency of notifications
 
-        return self.rest_client.sendPutRequest(
-            path, json.dumps(data), self.headers)
+    :rtype: array
+    """
 
-    def getAlert(self, alert_id):
-        """Return an specific alert information
+    data = {
+        'alert_name': alert_name,
+        'username': username,
+        'token': cls.token,
+        'alerts_type': alerts_type,
+        'alert_expression': alert_expression,
+        'alert_severity': alert_severity,
+        'metric_name': metric_name,
+        'emails': emails,
+        'status': status,
+        'notify_period': notify_period
+    }
+    path = '/alerts/{}/{}'.format(cls.token, str(alert_id))
 
-        :param alert_id: Id of the alert to be returned
+    return cls._request('PUT', path=path, data=json.dumps(data))
 
-        :rtype: array
-        """
-        path = '/alerts/{}/{}'.format(self.token, str(alert_id))
 
-        return self.rest_client.sendGetRequest(path)
+def get_alert(cls, alert_id):
+    """Return an specific alert information
 
-    def deleteAlert(self, alert_id):
-        """Delete an specific alert
+    :param cls: class object
+    :type cls: ZeusClient
+    :param alert_id: Id of the alert to be returned
 
-        :param alert_id: Id of the alert to be deleted
+    :rtype: array
+    """
+    path = '/alerts/{}/{}'.format(cls.token, str(alert_id))
 
-        :rtype: array
-        """
-        path = '/alerts/{}/{}'.format(self.token, str(alert_id))
+    return cls._request('GET', path=path)
 
-        return self.rest_client.sendDeleteRequest(path)
 
-    def enableAlerts(self, alert_id_list):
-        """Bulk enable alerts
+def delete_alert(cls, alert_id):
+    """Delete an specific alert
 
-        :param alert_id_list: List of ids of the alerts to be enabled
+    :param cls: class object
+    :type cls: ZeusClient
+    :param alert_id: Id of the alert to be deleted
 
-        :rtype: array
-        """
-        path = '/alerts/{}/enable'.format(self.token)
-        data = {'id': alert_id_list}
+    :rtype: array
+    """
+    path = '/alerts/{}/{}'.format(cls.token, str(alert_id))
+    return cls._request('DELETE', path=path)
 
-        return self.rest_client.sendPostRequest(
-            path, json.dumps(data), self.headers)
 
-    def disableAlerts(self, alert_id_list):
-        """Bulk disable alerts
+def enable_alerts(cls, alert_id_list):
+    """Bulk enable alerts
 
-        :param alert_id_list: List of ids of the alerts to be disabled
+    :param cls: class object
+    :type cls: ZeusClient
+    :param alert_id_list: List of ids of the alerts to be enabled
 
-        :rtype: array
-        """
-        path = '/alerts/{}/disable'.format(self.token)
-        data = {'id': alert_id_list}
+    :rtype: array
+    """
+    path = '/alerts/{}/enable'.format(cls.token)
+    data = {'id': alert_id_list}
 
-        return self.rest_client.sendPostRequest(
-            path, json.dumps(data), self.headers)
+    return cls._request('POST', path=path, data=json.dumps(data))
+
+
+def disable_alerts(cls, alert_id_list):
+    """Bulk disable alerts
+
+    :param cls: class object
+    :type cls: ZeusClient
+    :param alert_id_list: List of ids of the alerts to be disabled
+
+    :rtype: array
+    """
+    path = '/alerts/{}/disable'.format(cls.token)
+    data = {'id': alert_id_list}
+
+    return cls._request('POST', path=path, data=json.dumps(data))

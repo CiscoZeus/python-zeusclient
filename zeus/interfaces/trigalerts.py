@@ -15,31 +15,25 @@
 # limitations under the License.
 
 
-class TrigAlertsInterface(object):
-    def __init__(self, user_token, rest_client):
-        self.token = user_token
-        self.headers = {
-            'Authorization': "Bearer {}".format(self.token),
-            'content-type': 'application/json'
-        }
-        self.rest_client = rest_client
+def get_triggered_alerts(cls):
+    """Return all triggered alerts
 
-    def getTriggeredAlerts(self):
-        """Return all triggered alerts
+    :param cls: class object
+    :type cls: ZeusClient
+    :rtype: array
+    """
+    path = '/triggeredalerts/{}'.format(cls.token)
 
-        :rtype: array
-        """
-        url = '/triggeredalerts/{}'.format(self.token)
+    return cls._request('GET', path=path)
 
-        return self.rest_client.sendGetRequest(
-            url=url, headers=self.headers)
 
-    def getTriggeredAlertsLast24Hours(self):
-        """Return all triggered alerts in the last 24 hours
+def get_triggered_alerts_last24_hours(cls):
+    """Return all triggered alerts in the last 24 hours
 
-        :rtype: array
-        """
-        url = '/triggeredalerts/{}/last24'.format(self.token)
+    :param cls: class object
+    :type cls: ZeusClient
+    :rtype: array
+    """
+    path = '/triggeredalerts/{}/last24'.format(cls.token)
 
-        return self.rest_client.sendGetRequest(
-            url=url, headers=self.headers)
+    return cls._request('GET', path=path)

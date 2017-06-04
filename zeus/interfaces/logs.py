@@ -15,76 +15,60 @@
 # limitations under the License.
 
 import json
-from utils import validateLogName, validateDates
+from utils import validate_log_name, validate_dates
 
 
-class LogsInterface(object):
-    def __init__(self, user_token, rest_client):
-        self.token = user_token
-        self.headers = {
-            'Authorization': "Bearer {}".format(self.token),
-            'content-type': 'application/json'
-        }
-        self.rest_client = rest_client
+def send_log(cls, log_name, logs):
+    """Return ``dict`` saying how many *logs* were successfully inserted
+    with *log_name*.
 
-    def sendLog(self, log_name, logs):
-        """Return ``dict`` saying how many *logs* were successfully inserted
-        with *log_name*.
+    :param cls: class object
+    :type cls: ZeusClient
+    :param string log_name: String with the name of the log.
+    :param dict logs: ``array`` of ``dict`` containing the logs to send.
+    :rtype: dict
 
-        :param string log_name: String with the name of the log.
-        :param dict logs: ``array`` of ``dict`` containing the logs to send.
-        :rtype: dict
+    """
+    path = '/logs/{}/{}'.format(cls.token, log_name)
 
-        """
-        url = '/logs/{}/{}'.format(self.token, log_name)
+    validate_log_name(log_name)
+    data = {'logs': json.dumps(logs)}
 
-        validateLogName(log_name)
-        data = {'logs': json.dumps(logs)}
+    return cls._request('POST', path=path, data=data)
 
-        return self.rest_client.sendPostRequest(
-            url, data, self.__build_header(log_name))
 
-    def getLog(self, log_name, attribute_name=None, pattern=None,
-               from_date=None, to_date=None, offset=None, limit=None):
-        """Return ``array`` of ``dict`` with the logs that match the params.
+def get_log(cls, log_name, attribute_name=None, pattern=None,
+            from_date=None, to_date=None, offset=None, limit=None):
+    """Return ``array`` of ``dict`` with the logs that match the params.
 
-        :param string log_name: Name of the log.
-        :param string attribute_name: Name of field to be searched. If omitted,
-        search all fields.
-        :param string pattern: Pattern to match the logs against.
-        :param string from_date: Unix formatted start date.
-        :param string to_date: Unix formatted end date.
-        :param string offset: Result offset.
-        :param string limit: Max number of results in the return.
-        :rtype: array
+    :param cls: class object
+    :type cls: ZeusClient
+    :param string log_name: Name of the log.
+    :param string attribute_name: Name of field to be searched. If omitted,
+    search all fields.
+    :param string pattern: Pattern to match the logs against.
+    :param string from_date: Unix formatted start date.
+    :param string to_date: Unix formatted end date.
+    :param string offset: Result offset.
+    :param string limit: Max number of results in the return.
+    :rtype: array
 
-        """
-        url = '/logs/{}'.format(self.token)
+    """
+    path = '/logs/{}'.format(cls.token)
 
-        validateDates(from_date, to_date)
-        data = {"log_name": log_name}
-        if attribute_name:
-            data['attribute_name'] = attribute_name
-        if pattern:
-            data['pattern'] = pattern
-        if from_date:
-            data['from'] = from_date
-        if to_date:
-            data['to'] = to_date
-        if offset:
-            data['offset'] = offset
-        if limit:
-            data['limit'] = limit
+    validate_dates(from_date, to_date)
+    data = {"log_name": log_name}
+    if attribute_name:
+        data['attribute_name'] = attribute_name
+    if pattern:
+        data['pattern'] = pattern
+    if from_date:
+        data['from'] = from_date
+    if to_date:
+        data['to'] = to_date
+    if offset:
+        data['offset'] = offset
+    if limit:
+        data['limit'] = limit
 
-        return self.rest_client.sendGetRequest(
-            url, data, self.__build_header(log_name))
-
-    def __build_header(self, bucket_name):
-        """
-        Make HTTP Header
-        :param bucket_name: bucket name
-        :type bucket_name: str
-        :return: Header Object
-        :rtype: dict
-        """
-        return dict(self.headers, **{'Bucket-Name': bucket_name})
+    return cls._request('GET', path=path, data=data)
