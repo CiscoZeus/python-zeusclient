@@ -14,6 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__author__ = 'Marc Solanas Tarre'
-__email__ = 'msolanas@cisco.com'
+__author__ = 'Cisco Zeus Team'
+__email__ = 'zeus-support@external.cisco.com'
 __version__ = '0.2.1'

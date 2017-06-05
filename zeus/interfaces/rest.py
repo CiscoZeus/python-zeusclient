@@ -26,7 +26,6 @@ TIMEOUT_SECONDS = 20
 
 
 class RestClient(object):
-
     def __init__(self, server):
         # makes sure we always use https
         url_object = urlparse(server)
@@ -34,7 +33,7 @@ class RestClient(object):
         url_parts[0] = "https://"
         self.server = ''.join(url_parts)
 
-    def _sendRequest(self, method, path, data=None, headers=None):
+    def __send_request(self, method, path, data=None, headers=None):
         final_url = urljoin(self.server, path)
         if method == METHOD_POST:
             r = requests.post(
@@ -50,6 +49,9 @@ class RestClient(object):
                 final_url, data=data, headers=headers,
                 timeout=TIMEOUT_SECONDS
             )
+        else:
+            # TODO Define exception more properly
+            raise Exception('Unknown method {}'.format(method))
 
         if r.status_code == 500:
             raise Exception("Internal Server Error")
@@ -58,14 +60,14 @@ class RestClient(object):
         except Exception:
             return r.status_code
 
-    def sendPostRequest(self, path, data=None, headers=None):
-        return self._sendRequest(METHOD_POST, path, data, headers)
+    def sendPostRequest(self, url, data=None, headers=None):
+        return self.__send_request(METHOD_POST, url, data, headers)
 
-    def sendGetRequest(self, path, data=None, headers=None):
-        return self._sendRequest(METHOD_GET, path, data, headers)
+    def sendGetRequest(self, url, data=None, headers=None):
+        return self.__send_request(METHOD_GET, url, data, headers)
 
-    def sendPutRequest(self, path, data=None, headers=None):
-        return self._sendRequest(METHOD_PUT, path, data, headers)
+    def sendPutRequest(self, url, data=None, headers=None):
+        return self.__send_request(METHOD_PUT, url, data, headers)
 
-    def sendDeleteRequest(self, path, data=None, headers=None):
-        return self._sendRequest(METHOD_DELETE, path, data, headers)
+    def sendDeleteRequest(self, url, data=None, headers=None):
+        return self.__send_request(METHOD_DELETE, url, data, headers)

@@ -37,8 +37,8 @@ setup(
     version='0.2.2.7',
     description="Python client for CiscoZeus.io. It allows a user to post/query logs and metrics using Zeus.",
     long_description=readme + '\n\n' + history,
-    author="Marc Solanas Tarre",
-    author_email='msolanas@cisco.com',
+    author="Cisco Zeus Team",
+    author_email='zeus-support@external.cisco.com',
     url='https://github.com/CiscoZeus/python-zeusclient.git',
     packages=[
         'zeus',
